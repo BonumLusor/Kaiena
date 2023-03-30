@@ -1,0 +1,77 @@
+[
+    {
+        "id": 1,
+        "id_categories_cliente": 1,
+        "name": "Renata"
+    },
+    {
+        "id": 2,
+        "id_categories_cliente": 2,
+        "name": "FCS"
+    },
+    {
+        "id": 3,
+        "id_categories_cliente": 1,
+        "name": "José Assuero"
+    },
+    {
+        "id": 4,
+        "id_categories_cliente": 2,
+        "name": "Center Radio"
+    },
+    {
+        "id": 5,
+        "id_categories_cliente": 1,
+        "name": "Clarissa Leal"
+    },
+    {
+        "id": 6,
+        "id_categories_cliente": 2,
+        "name": "Leal Imagem"
+    },
+    {
+        "id": 7,
+        "id_categories_cliente": 2,
+        "name": "Radio Minas"
+    },
+    {
+        "id": 8,
+        "id_categories_cliente": 1,
+        "name": "Maristela"
+    },
+    {
+        "id": 9,
+        "id_categories_cliente": 2,
+        "name": "ODT"
+    },
+    {
+        "id": 10,
+        "id_categories_cliente": 2,
+        "name": "Radiodonto"
+    },
+    {
+        "id": 11,
+        "id_categories_cliente": 2,
+        "name": "ODX"
+    },
+    {
+        "id": 12,
+        "id_categories_cliente": 2,
+        "name": "IROD"
+    },
+    {
+        "id": 13,
+        "id_categories_cliente": 1,
+        "name": "Daisy Quagliato"
+    },
+    {
+        "id": 14,
+        "id_categories_cliente": 1,
+        "name": "Andreia Perrela"
+    },
+    {
+        "id": 15,
+        "id_categories_cliente": 1,
+        "name": "Joane Maglia"
+    }
+]
