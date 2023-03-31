@@ -1,17 +1,20 @@
 <template>
-  <cadastroCliente></cadastroCliente>
+  <HambMenu></HambMenu>
+  <clientRegister></clientRegister>
 </template>
 
 <script lang="ts">
-  import tabela from "./components/Calendar.vue"
-  import cadastroPost from "./components/Cadastro_post.vue"
-  import cadastroCliente from "./components/Cadastro_cliente.vue"
+  import HambMenu from "./components/Menu.vue"
+  import calendar from "./components/Calendar.vue"
+  import postRegister from "./components/Post_register.vue"
+  import clientRegister from "./components/Client_Register.vue"
 
   export default{
     components: {
-      tabela,
-      cadastroPost,
-      cadastroCliente,
+      HambMenu,
+      calendar,
+      postRegister,
+      clientRegister,
     }
   }
 </script>
@@ -26,5 +29,8 @@
     overflow: hidden;
     width: 100vw;
     height: 100vh;
+  }
+  HambMenu {
+    z-index: 0;
   }
 </style>

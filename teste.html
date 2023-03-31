@@ -1,0 +1,98 @@
+<template>
+
+	<head>
+	<title> Menu lateral em CSS </title>
+    <style scoped>
+    body {
+        background-color: gray;
+        color: #000;
+        font: 12px Verdana, sans-serif;
+    }
+
+    a{
+        text-decoration: none;
+    }
+
+    header{
+        padding: 10px;
+    }
+
+    .btn-abrir{
+        color: black;
+        font-size: 25px;
+    }
+
+    nav .fechado{
+        height: 100%;
+        width: 0px;
+        background-color: aquamarine;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        overflow: hidden;
+        transition: width 0.3s;
+    }
+
+    nav .aberto{
+        padding-left: 90%;
+        height: 100%;
+        width: 250px;
+        background-color: aquamarine;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        overflow: hidden;
+        transition: width 0.3s;
+    }
+
+    nav a{
+        color: rgb(39, 103, 158);
+        font-size: 25px;
+        display: block;
+        padding: 12px 10px 12px 32px;
+    }
+
+    nav a:hover{
+        color: aquamarine;
+        background-color: white
+    }
+
+    nav a.fechar:hover{
+        
+        color: aquamarine;
+        background-color: white;
+    }
+    </style>
+
+   
+	</head>
+
+	<body>
+
+	<header>
+        <a href="#" class="btn-abrir" onclick = "abrirMenu()">&#9776;</a>
+    </header>
+
+	<nav id="menu">
+		<li><a href="#" class="fechar">&times;</a></li>
+		<li><a href="#">Cadastro Post</a></li>
+		<li><a href="#">Cadastro Cliente</a></li>
+	</nav>
+
+
+	</body>
+    <script>
+        function abrirMenu(){
+            document.getElementById('menu').style.width = '250px';
+        }
+
+        function fecharMenu(){
+            document.getElementById('menu').style.width = '0px'
+        }
+    </script>
+</template>
+
+
+        

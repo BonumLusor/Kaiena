@@ -28,16 +28,16 @@
   
   <script lang="ts">
     import { defineComponent, toRaw } from 'vue';
-    import { cliente, Relacional } from '../Types/Cadastro_cliente'
+    import { client, Relational } from '../Types/Clients_Register.ts'
 
     export default defineComponent({
 
-      name: 'cadastroCliente',
+      name: 'clientRegister',
 
       data() {
           return {
-            clientes: [] as cliente[],
-            current: [] as cliente[],
+            clients: [] as client[],
+            current: [] as client[],
           }
       },
 
@@ -49,7 +49,7 @@
         
         set() {
           
-          let clientes = toRaw(this.clientes);
+          let clientes = toRaw(this.clients);
           let i: number = -1;
           this.current = [];
 
@@ -63,8 +63,8 @@
           if(i == -1 ) {
             alert('Selecione o tipo de cliente');
           } else {
-            clientes.forEach((item:cliente) => {
-              if (item.id_categories_cliente == i) {
+            clientes.forEach((item:client) => {
+              if (item.cod_categorie_client == i) {
                 this.current.push(item);
               }
             })
@@ -78,26 +78,26 @@
 
         
 
-        let clientes:cliente[] = []
+        let clientes:client[] = []
         let Relacional: number[] = []
 
-        const url: any = "http://localhost:3000/Clientes";
+        const url: any = "http://localhost:3000/Clients";
           const response: any = await fetch(url);
           const data: Promise<object> = response.json();
           data.then((k: any) => {
-            k.forEach((item: cliente) => {
+            k.forEach((item: client) => {
               clientes.push(item)
             });
           });
 
-        const url2: any = "http://localhost:3000/Clientes_Relacional";
+        const url2: any = "http://localhost:3000/Clients_Relational";
           const response2: any = await fetch(url2);
           const data2: Promise<object> = response2.json();
           data2.then((k: any) => {
             for(let i = 0; i < k.length; i++) {
-              clientes.forEach((cliente: cliente, index: number) => {
-                k.forEach((item: Relacional) => {
-                  if(cliente.id == item.cod_clientes || cliente.id == item.cod_relacional) {
+              clientes.forEach((cliente: client, index: number) => {
+                k.forEach((item: Relational) => {
+                  if(cliente.id == item.cod_clients || cliente.id == item.cod_relational) {
                   console.log(clientes.splice(index, 1))
                   }
                 })
@@ -105,7 +105,7 @@
             }
           });
        
-        this.clientes = clientes
+        this.clients = clientes
 
       }
 

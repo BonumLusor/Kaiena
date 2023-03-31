@@ -7,7 +7,7 @@
       <div class="form">
         <select name="Tipo" id="" required>
           <option value="">Selecione o tipo</option>
-          <option v-for="item in tipos" :key="item.id"> {{ item.name }} </option>
+          <option v-for="item in types" :key="item.id"> {{ item.name }} </option>
         </select>
       </div>
       <div class="form">
@@ -28,15 +28,15 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { tipo } from '../Types/Cadastro'
+  import { type } from '../Types/Post_Register'
 
   export default defineComponent({
 
-    name: 'cadastroPost',
+    name: 'postRegister',
 
     data() {
         return {
-          tipos: [
+          types: [
             { id: 1, name: "Post simples" },
             { id: 2, name: "Reels" },
             { id: 3, name: "Carrossel" },
@@ -44,7 +44,7 @@
             { id: 5, name: "Stories" },
             { id: 6, name: "Destaque" },
             { id: 7, name: "Feed"}
-          ] as tipo[]
+          ] as type[]
         }
     },
 
@@ -55,7 +55,7 @@
         if (form.elements.namedItem('Dentista')?.checked || form.elements.namedItem('Clínica')?.checked) {
           var post = {
             nome: form.elements.namedItem('Nome')?.value,
-            tipo: form.elements.namedItem('Tipo')?.value,
+            type: form.elements.namedItem('Tipo')?.value,
             dentista: form.elements.namedItem('Dentista')?.checked,
             clinica: form.elements.namedItem('Clínica')?.checked,
             descricao: form.elements.namedItem('Descricao')?.value,

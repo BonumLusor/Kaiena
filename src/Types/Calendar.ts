@@ -1,4 +1,4 @@
-export type mes = {
-  diaMes: number | null;
-  diaSemana: number | null;
+export type numberMonth = {
+  monthDay: number | null;
+  weekDay: number | null;
 }

@@ -1,4 +1,4 @@
-export type tipo = {
+export type type = {
   name: string;
   id: number
 }

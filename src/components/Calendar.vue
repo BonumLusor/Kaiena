@@ -1,253 +1,266 @@
 <template>
   <body>
     <br>
-    <h1> {{ mesName }} / {{ ano }}</h1>
+    <h1> {{ currentMonth }} / {{ year }} </h1>
+    
     <h3>Cliente</h3>
-    <button v-on:click="ultMes"> Último mês </button>
-    <button v-on:click="proxMes"> Próximo mês </button>
+    <button v-on:click="pastMonth"> Último mês </button>
+    <button v-on:click="nextMonth"> Próximo mês </button>
 
     <br>
     <div class="grid-container-header">
-      <div class="calendar" v-for = "item in semana" :key="item.id">
-        {{ item.dia }}
+      <div class="calendar" v-for = "item in weekDaysName" :key="item.id">
+        {{ item.day }}
       </div>  
     </div>
     <div class="grid-container">
-      <div class="day" v-for="item in diasMes" v-on:click="selected = item.diaMes"> 
-        <div> {{ item.diaMes }}  </div>
+      <div class="day" v-for="item in month" v-on:click="cardToggle(item.monthDay)"> 
+        <div> {{ item.monthDay }}  </div>
       </div>
     </div>
-    <div class="card" v-if="selected">
-      <div> {{ selected }} </div>
-      <button v-on:click=" selected = null" id="close"> X </button>
-    </div>
+
+      <div class="card" id="infoCard">
+        <div> {{ selected }} </div>
+        <button v-on:click=" selected = null; cardToggle(null)" id="close">&times;</button>
+      </div>
+
   </body>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mes } from '../Types/Calendar'
+import { numberMonth } from '../Types/Calendar'           
 
 export default defineComponent({
-  name: "tabela",
+  name: "calendar",
   data(){
     return{
-      semana: [
-        {dia: "Segunda", id: 1},
-        {dia: "Terça", id: 2},
-        {dia: "Quarta", id: 3},
-        {dia: "Quinta", id: 4},
-        {dia: "Sexta", id: 5},       
+      weekDaysName: [
+        {day: "Segunda", id: 1},
+        {day: "Terça", id: 2},
+        {day: "Quarta", id: 3},
+        {day: "Quinta", id: 4},
+        {day: "Sexta", id: 5},       
       ],
-      diasMes: [] as mes[],
+      month: [] as numberMonth[],
       selected: null as number | null,
-      mes: 0 as number,
-      mesName: null as string | null,
-      ano: 0 as number,
-      data: new Date()
+      numberMonth: 0 as number,
+      currentMonth: null as string | null,
+      year: 0 as number,
+      date: new Date()
     }
   },
   methods:{
-    proxMes(){ 
-      this.diasMes = []
+    cardToggle(monthDay: number) {
 
-      if (this.mes < 11) {
-        this.mes++
-        this.data.setDate(1)
-        this.data.setMonth(this.mes)
+      this.selected = monthDay;
+
+      let card: HTMLElement = document.getElementById("infoCard");
+      if (card?.classList.contains("active")) card.classList.remove("active");
+      else card?.classList.add("active");
+    },
+
+    nextMonth(){ 
+      this.month = []
+
+      if (this.numberMonth < 11) {
+        this.numberMonth++
+        this.date.setDate(1)
+        this.date.setMonth(this.numberMonth)
       }
       else {
-        this.mes = 0
-        this.ano++
-        this.data.setFullYear(this.ano)
-        this.data.setMonth(this.mes)
+        this.numberMonth = 0
+        this.year++
+        this.date.setFullYear(this.year)
+        this.date.setMonth(this.numberMonth)
       }
 
-      if (this.mes == 0) this.mesName = "Janeiro"
-      if (this.mes == 1) this.mesName = "Fevereiro"
-      if (this.mes == 2) this.mesName = "Março"
-      if (this.mes == 3) this.mesName = "Abril"
-      if (this.mes == 4) this.mesName = "Maio"
-      if (this.mes == 5) this.mesName = "Junho"
-      if (this.mes == 6) this.mesName = "Julho"
-      if (this.mes == 7) this.mesName = "Agosto"
-      if (this.mes == 8) this.mesName = "Setembro"
-      if (this.mes == 9) this.mesName = "Outubro"
-      if (this.mes == 10) this.mesName = "Novembro"
-      if (this.mes == 11) this.mesName = "Dezembro"
+      if (this.numberMonth == 0) this.currentMonth = "Janeiro"
+      if (this.numberMonth == 1) this.currentMonth = "Fevereiro"
+      if (this.numberMonth == 2) this.currentMonth = "Março"
+      if (this.numberMonth == 3) this.currentMonth = "Abril"
+      if (this.numberMonth == 4) this.currentMonth = "Maio"
+      if (this.numberMonth == 5) this.currentMonth = "Junho"
+      if (this.numberMonth == 6) this.currentMonth = "Julho"
+      if (this.numberMonth == 7) this.currentMonth = "Agosto"
+      if (this.numberMonth == 8) this.currentMonth = "Setembro"
+      if (this.numberMonth == 9) this.currentMonth = "Outubro"
+      if (this.numberMonth == 10) this.currentMonth = "Novembro"
+      if (this.numberMonth == 11) this.currentMonth = "Dezembro"
 
-      let mesLength = 0
-      if (this.mes == 0 || this.mes == 2 || this.mes == 4 || this.mes == 6 || this.mes == 7 || this.mes == 9 || this.mes == 11){
-        mesLength = 31
+      let monthLength = 0
+      if (this.numberMonth == 0 || this.numberMonth == 2 || this.numberMonth == 4 || this.numberMonth == 6 || this.numberMonth == 7 || this.numberMonth == 9 || this.numberMonth == 11){
+        monthLength = 31
       }
-      if (this.mes == 3 || this.mes == 5 || this.mes == 8 || this.mes == 10 ){
-        mesLength = 30
+      if (this.numberMonth == 3 || this.numberMonth == 5 || this.numberMonth == 8 || this.numberMonth == 10 ){
+        monthLength = 30
       }
-      if (this.mes == 1){
-        mesLength = 28
+      if (this.numberMonth == 1){
+        monthLength = 28
       }
 
-      for (let i = 1; i <= mesLength; i++) {
-      this.data.setDate(i)
-      if (this.data.getDay() == 0 || this.data.getDay() == 6) continue
+      for (let i = 1; i <= monthLength; i++) {
+      this.date.setDate(i)
+      if (this.date.getDay() == 0 || this.date.getDay() == 6) continue
       let temp = {
-        diaMes: this.data.getDate(),
-        diaSemana: this.data.getDay()
+        monthDay: this.date.getDate(),
+        weekDay: this.date.getDay()
       }
-      this.diasMes.push(temp)
+      this.month.push(temp)
     }
     
     
       
-      if (this.diasMes[0].diaSemana == 2){
-        this.diasMes.unshift({diaMes: null, diaSemana: null})
+      if (this.month[0].weekDay == 2){
+        this.month.unshift({monthDay: null, weekDay: null})
       }
-      if (this.diasMes[0].diaSemana == 3){
-        this.diasMes.unshift({diaMes: null, diaSemana: null})
-        this.diasMes.unshift({diaMes: null, diaSemana: null})
+      if (this.month[0].weekDay == 3){
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
       }
-      if (this.diasMes[0].diaSemana == 4){
-        this.diasMes.unshift({diaMes: null, diaSemana: null})
-        this.diasMes.unshift({diaMes: null, diaSemana: null})
-        this.diasMes.unshift({diaMes: null, diaSemana: null})
+      if (this.month[0].weekDay == 4){
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
       }
-      if (this.diasMes[0].diaSemana == 5){
-        this.diasMes.unshift({diaMes: null, diaSemana: null})
-        this.diasMes.unshift({diaMes: null, diaSemana: null})
-        this.diasMes.unshift({diaMes: null, diaSemana: null})
-        this.diasMes.unshift({diaMes: null, diaSemana: null})
+      if (this.month[0].weekDay == 5){
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
       }
     },
-    ultMes() { 
-      this.diasMes = []
+    pastMonth() { 
+      this.month = []
 
-      if (this.mes > 0) {
-        this.mes--
-        this.data.setDate(1)
-        this.data.setMonth(this.mes)
+      if (this.numberMonth > 0) {
+        this.numberMonth--
+        this.date.setDate(1)
+        this.date.setMonth(this.numberMonth)
       }
       else {
-        this.mes = 11
-        this.ano--
-        this.data.setFullYear(this.ano)
-        this.data.setMonth(this.mes)
+        this.numberMonth = 11
+        this.year--
+        this.date.setFullYear(this.year)
+        this.date.setMonth(this.numberMonth)
       }
 
-      if (this.mes == 0) this.mesName = "Janeiro"
-      if (this.mes == 1) this.mesName = "Fevereiro"
-      if (this.mes == 2) this.mesName = "Março"
-      if (this.mes == 3) this.mesName = "Abril"
-      if (this.mes == 4) this.mesName = "Maio"
-      if (this.mes == 5) this.mesName = "Junho"
-      if (this.mes == 6) this.mesName = "Julho"
-      if (this.mes == 7) this.mesName = "Agosto"
-      if (this.mes == 8) this.mesName = "Setembro"
-      if (this.mes == 9) this.mesName = "Outubro"
-      if (this.mes == 10) this.mesName = "Novembro"
-      if (this.mes == 11) this.mesName = "Dezembro"
+      if (this.numberMonth == 0) this.currentMonth = "Janeiro"
+      if (this.numberMonth == 1) this.currentMonth = "Fevereiro"
+      if (this.numberMonth == 2) this.currentMonth = "Março"
+      if (this.numberMonth == 3) this.currentMonth = "Abril"
+      if (this.numberMonth == 4) this.currentMonth = "Maio"
+      if (this.numberMonth == 5) this.currentMonth = "Junho"
+      if (this.numberMonth == 6) this.currentMonth = "Julho"
+      if (this.numberMonth == 7) this.currentMonth = "Agosto"
+      if (this.numberMonth == 8) this.currentMonth = "Setembro"
+      if (this.numberMonth == 9) this.currentMonth = "Outubro"
+      if (this.numberMonth == 10) this.currentMonth = "Novembro"
+      if (this.numberMonth == 11) this.currentMonth = "Dezembro"
 
-      let mesLength = 0
-    if (this.mes == 0 || this.mes == 2 || this.mes == 4 || this.mes == 6 || this.mes == 7 || this.mes == 9 || this.mes == 11){
-      mesLength = 31
-    }
-    if (this.mes == 3 || this.mes == 5 || this.mes == 8 || this.mes == 10 ){
-      mesLength = 30
-    }
-    if (this.mes == 1){
-      mesLength = 28
-    }
-
-      for (let i = 1; i <= mesLength; i++) {
-      this.data.setDate(i)
-      if (this.data.getDay() == 0 || this.data.getDay() == 6) continue
-      let temp = {
-        diaMes: this.data.getDate(),
-        diaSemana: this.data.getDay()
+      let monthLength = 0
+      if (this.numberMonth == 0 || this.numberMonth == 2 || this.numberMonth == 4 || this.numberMonth == 6 || this.numberMonth == 7 || this.numberMonth == 9 || this.numberMonth == 11){
+        monthLength = 31
       }
-      this.diasMes.push(temp)
-    }
-    
-    
-    if (this.diasMes[0].diaSemana == 2){
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-    }
-    if (this.diasMes[0].diaSemana == 3){
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-    }
-    if (this.diasMes[0].diaSemana == 4){
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-    }
-    if (this.diasMes[0].diaSemana == 5){
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-    }
+      if (this.numberMonth == 3 || this.numberMonth == 5 || this.numberMonth == 8 || this.numberMonth == 10 ){
+        monthLength = 30
+      }
+      if (this.numberMonth == 1){
+        monthLength = 28
+      }
 
-    
+        for (let i = 1; i <= monthLength; i++) {
+        this.date.setDate(i)
+        if (this.date.getDay() == 0 || this.date.getDay() == 6) continue
+        let temp = {
+          monthDay: this.date.getDate(),
+          weekDay: this.date.getDay()
+        }
+        this.month.push(temp)
+      }
+      
+      
+      if (this.month[0].weekDay == 2){
+        this.month.unshift({monthDay: null, weekDay: null})
+      }
+      if (this.month[0].weekDay == 3){
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
+      }
+      if (this.month[0].weekDay == 4){
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
+      }
+      if (this.month[0].weekDay == 5){
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null})
+      }
+
     }
   },
   beforeMount(){
-    this.mes = this.data.getMonth()
-      if (this.mes == 0) this.mesName = "Janeiro"
-      if (this.mes == 1) this.mesName = "Fevereiro"
-      if (this.mes == 2) this.mesName = "Março"
-      if (this.mes == 3) this.mesName = "Abril"
-      if (this.mes == 4) this.mesName = "Maio"
-      if (this.mes == 5) this.mesName = "Junho"
-      if (this.mes == 6) this.mesName = "Julho"
-      if (this.mes == 7) this.mesName = "Agosto"
-      if (this.mes == 8) this.mesName = "Setembro"
-      if (this.mes == 9) this.mesName = "Outubro"
-      if (this.mes == 10) this.mesName = "Novembro"
-      if (this.mes == 11) this.mesName = "Dezembro"
-    this.ano = this.data.getFullYear()
+    this.numberMonth = this.date.getMonth()
+      if (this.numberMonth == 0) this.currentMonth = "Janeiro"
+      if (this.numberMonth == 1) this.currentMonth = "Fevereiro"
+      if (this.numberMonth == 2) this.currentMonth = "Março"
+      if (this.numberMonth == 3) this.currentMonth = "Abril"
+      if (this.numberMonth == 4) this.currentMonth = "Maio"
+      if (this.numberMonth == 5) this.currentMonth = "Junho"
+      if (this.numberMonth == 6) this.currentMonth = "Julho"
+      if (this.numberMonth == 7) this.currentMonth = "Agosto"
+      if (this.numberMonth == 8) this.currentMonth = "Setembro"
+      if (this.numberMonth == 9) this.currentMonth = "Outubro"
+      if (this.numberMonth == 10) this.currentMonth = "Novembro"
+      if (this.numberMonth == 11) this.currentMonth = "Dezembro"
+    this.year = this.date.getFullYear()
   },
   mounted(){  
     
-    let mesLength = 0
-    if (this.mes == 0 || this.mes == 2 || this.mes == 4 || this.mes == 6 || this.mes == 7 || this.mes == 9 || this.mes == 11){
-      mesLength = 31
+    let monthLength = 0
+    if (this.numberMonth == 0 || this.numberMonth == 2 || this.numberMonth == 4 || this.numberMonth == 6 || this.numberMonth == 7 || this.numberMonth == 9 || this.numberMonth == 11){
+      monthLength = 31
     }
-    if (this.mes == 3 || this.mes == 5 || this.mes == 8|| this.mes == 10 ){
-      mesLength = 30
+    if (this.numberMonth == 3 || this.numberMonth == 5 || this.numberMonth == 8|| this.numberMonth == 10 ){
+      monthLength = 30
     }
-    if (this.mes == 1){
-      mesLength = 28
+    if (this.numberMonth == 1){
+      monthLength = 28
     }
 
-    for (let i = 1; i <= mesLength; i++) {
-      this.data.setDate(i)
-      if (this.data.getDay() == 0 || this.data.getDay() == 6) continue
+    for (let i = 1; i <= monthLength; i++) {
+      this.date.setDate(i)
+      if (this.date.getDay() == 0 || this.date.getDay() == 6) continue
       let temp = {
-        diaMes: this.data.getDate(),
-        diaSemana: this.data.getDay()
+        monthDay: this.date.getDate(),
+        weekDay: this.date.getDay()
       }
-      this.diasMes.push(temp)
+      this.month.push(temp)
     }
     
-    if (this.diasMes[0].diaSemana == 2){
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
+    if (this.month[0].weekDay == 2){
+      this.month.unshift({monthDay: null, weekDay: null})
     }
-    if (this.diasMes[0].diaSemana == 3){
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
+    if (this.month[0].weekDay == 3){
+      this.month.unshift({monthDay: null, weekDay: null})
+      this.month.unshift({monthDay: null, weekDay: null})
     }
-    if (this.diasMes[0].diaSemana == 4){
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
+    if (this.month[0].weekDay == 4){
+      this.month.unshift({monthDay: null, weekDay: null})
+      this.month.unshift({monthDay: null, weekDay: null})
+      this.month.unshift({monthDay: null, weekDay: null})
     }
-    if (this.diasMes[0].diaSemana == 5){
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
-      this.diasMes.unshift({diaMes: null, diaSemana: null})
+    if (this.month[0].weekDay == 5){
+      this.month.unshift({monthDay: null, weekDay: null})
+      this.month.unshift({monthDay: null, weekDay: null})
+      this.month.unshift({monthDay: null, weekDay: null})
+      this.month.unshift({monthDay: null, weekDay: null})
     }
   },
+
+  
   
 })
 </script>
@@ -272,6 +285,7 @@ export default defineComponent({
   .calendar {
     border-color: rgb(185, 185, 185);
     border-style: solid;
+    border-bottom: none;
     height: 5vh;
     width: 15vw;
     text-align: center;
@@ -322,11 +336,22 @@ export default defineComponent({
     height: 80vh;
     background-color: rgba(21, 21, 21, 1);
     color: white;
-    z-index: 1000;
+    z-index: -11111;
+    opacity: 0;
+    transition: opacity 0.5s;
+    transition-delay: z-index 1;
+  }
+
+  .card.active {
+    opacity: 1;
+    z-index: 10;
+    transition: opacity 0.3s;
   }
 
   h1 {
-    margin-left: 2.5vw
+    margin-left: 2.5vw;
+    margin-top: -15px;
+    z-index: 2;
   }
 
   h3 {
@@ -351,9 +376,12 @@ export default defineComponent({
   }
 
   #close {
+    font-size: 25px;
+    font: bold;
+    font-weight: 700;
     position: absolute;
     top: 0vh;
-    left: 76vw;
+    left: 75vw;
     width: 10px;
     height: 10px;
   }
@@ -364,9 +392,10 @@ export default defineComponent({
   box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
   transform: translateY(-2px);
   }
+
   #close:hover {
   color: rgb(120, 22, 22);
-  background-color: #1A1A1A;
+  background-color: transparent;
   box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
   transform: translateY(-2px);
   }
