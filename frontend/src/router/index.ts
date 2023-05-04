@@ -1,8 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import calendarView from '../views/calendarView.vue'
-import postRegisterView from '../views/postRegisterView.vue'
-import clientRegisterView from '../views/clientRegisterView.vue'
+import RegisterView from '../views/RegisterView.vue'
 
 const routes = [
   {
@@ -14,12 +13,8 @@ const routes = [
     component: calendarView,
   },
   {
-    path: '/PostRegister',
-    component: postRegisterView,
-  },
-  {
-    path: '/ClientRegister',
-    component: clientRegisterView,
+    path: '/Register',
+    component: RegisterView,
   }
 ]
 

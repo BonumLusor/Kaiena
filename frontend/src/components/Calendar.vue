@@ -1,11 +1,15 @@
 <template>
   <body>
     <br>
-    <h1> {{ currentMonth }} / {{ year }} </h1>
-    
-    <h3>Cliente</h3>
-    <button v-on:click="pastMonth"> Último mês </button>
-    <button v-on:click="nextMonth"> Próximo mês </button>
+    <div class="title">
+      <h1> {{ currentMonth }} / {{ year }} </h1>
+      <h3>Cliente</h3> 
+    </div>
+
+    <div class="navButtons">
+      <button v-on:click="pastMonth"> Último mês </button>
+      <button v-on:click="nextMonth"> Próximo mês </button>  
+    </div>
 
     <br>
     <div class="grid-container-header">
@@ -279,7 +283,7 @@ export default defineComponent({
   body {
     background-color: rgba(21, 21, 21, 0.965);
     color: white;
-    height: 100vh;
+    height: 92vh;
     width: 100vw;
     overflow: hidden;
   }
@@ -287,19 +291,20 @@ export default defineComponent({
     border-color: rgb(185, 185, 185);
     border-style: solid;
     border-bottom: none;
-    height: 5vh;
-    width: 15vw;
+    height: 100%;
+    width: 100%;
     text-align: center;
     font-size: 1.5em;
-
   }
   .day {
     border-color: rgb(185, 185, 185);
     border-style: solid;
-    height: 15vh;
-    width: 15vw;
+    height: 100%;
+    width: 100%;
     text-align: left;
-    cursor: pointer
+    cursor: pointer;
+    row-gap: 3px;
+    column-gap: 3px;
   }
 
   div {
@@ -315,9 +320,13 @@ export default defineComponent({
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+ */
     user-select: none;
-    row-gap: 3px
+    row-gap: 3px;
+    column-gap: 3px;
+    height: 80%;
+    width: 80%;
   }
   .grid-container-header {
+    margin-top: -12px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     -webkit-touch-callout: none; /* iPhone OS, Safari */
@@ -326,7 +335,9 @@ export default defineComponent({
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+ */
     user-select: none;
-    gap: -5px -5px -5px -5px -5px;
+    row-gap: 3px;
+    column-gap: 3px;
+    width: 80%;
   }
 
   .card {
@@ -399,6 +410,19 @@ export default defineComponent({
   background-color: transparent;
   box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
   transform: translateY(-2px);
+  }
+
+  .title {
+    display: flex;
+    z-index: 10;
+    margin-left: 7.5%;
+    margin-bottom: -1vh;
+  }
+
+  .navButtons {
+    margin-left: 7.5%;
+    padding: 0;
+    padding-bottom: -1vh;
   }
 
 </style>

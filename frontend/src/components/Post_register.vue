@@ -42,9 +42,6 @@
             { id: 2, name: "Reels" },
             { id: 3, name: "Carrossel" },
             { id: 4, name: "Carrossel animado" },
-            { id: 5, name: "Stories" },
-            { id: 6, name: "Destaque" },
-            { id: 7, name: "Feed"}
           ] as type[]
         }
     },

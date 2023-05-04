@@ -1,20 +1,16 @@
 <template>
     <div>
-      <button class="btn-abrir" v-on:click="nav">&#9776;</button>
       <nav id="menu">        
-        <div class="fechar" v-on:click="nav">&times;</div>
-        <div class="navegar" v-if="store.state.stage != 'Home'" >
-          <router-link class="link" to="/" v-on:click="{store.commit('setStage', 'Home'); nav()}"> Home </router-link>
+        <div class="option">
+          <router-link class="link" to="/" id="Home" v-on:click="{store.commit('setStage', 'Home'); activePage()}"> Home </router-link>
         </div>
-        <div class="navegar" v-if="store.state.stage != 'Calendar'" >
-          <router-link class="link" to="/Calendar" v-on:click="{store.commit('setStage', 'Calendar'); nav()}"> Calendar </router-link>
+        <div class="option">
+          <router-link class="link" to="/Calendar" id="Calendar" v-on:click="{store.commit('setStage', 'Calendar'); activePage()}"> Calendário </router-link>
         </div>
-        <div class="navegar" v-if="store.state.stage != 'postRegister'" >
-          <router-link class="link" to="/PostRegister" v-on:click="{store.commit('setStage', 'postRegister'); nav()}"> Cadastrar Post </router-link>
+        <div class="option" >
+          <router-link class="link" to="/Register" id="Register" v-on:click="{store.commit('setStage', 'Register'); activePage()}"> Cadastro </router-link>
         </div>
-        <div class="navegar" v-if="store.state.stage != 'clientRegister'" >
-          <router-link class="link" to="/ClientRegister" v-on:click="{store.commit('setStage', 'clientRegister'); nav()}"> Cadastrar Cliente </router-link>
-        </div>
+        
 	    </nav>
     </div>
 
@@ -35,32 +31,37 @@
 
   data(){
     return {
-      
     }
   },
 
   methods: {
-    nav() {
 
-      var nav: HTMLElement = document.getElementById("menu")!;
-      if (nav) {
-        if(nav?.classList.contains("active")){
-          nav.classList.remove("active");
-        }
-        else {
-          nav.classList.add("active");
-        }
+    activePage() {
+      if (this.store.state.stage == 'Register') {
+        document.getElementById("Register")!.style.color = "green";
+        document.getElementById("Calendar")!.style.color = "white";
+        document.getElementById("Home")!.style.color = "white";
       }
+      else if (this.store.state.stage == 'Calendar') {
+        document.getElementById("Calendar")!.style.color = "green";
+        document.getElementById("Register")!.style.color = "white";
+        document.getElementById("Home")!.style.color = "white";
+      }
+      else if (this.store.state.stage == 'Home') {
+        document.getElementById("Register")!.style.color = "white";
+        document.getElementById("Home")!.style.color = "green";
+        document.getElementById("Calendar")!.style.color = "white";
 
-    }
+      }
+    },
+
   },
 
-  // mounted() {
-  //   this.nav(){
-  //     var nav: HTMLElement = document.getElementById("menu")!;
-  //     nav.classList.remove("activate");
-  //   }
-  // }
+  mounted () {
+    this.activePage()
+  }
+
+
   
   })
 
@@ -68,62 +69,36 @@
 
 <style scoped>
 
-.navegar {
-  display: flex;
-  flex-direction: row;
-  height: 15vh;
-  width: 90%;
-  cursor: pointer;
-} 
+.option {
+  margin-top: -1vh;
+  color: white;
+  margin-bottom: 30px;
+}
 
 .link {
   text-decoration: none;
-  margin: 7vh 0;
-  color: white;
+  color: white
 }
 
-div.navegar:hover{
+div.option:hover{
     color: whitesmoke;
     text-decoration: underline;
 }
 
-.btn-abrir{
-  width: 4vw;
-  height: 6vh;
-  position: absolute;
-  appearance: none;
-  border: none;
-  background-color: transparent;
-  margin-left: 94%;
-  color: white;
-  font-size: 25px;
-}
-.btn-abrir:hover{
-    background: white;
-    color: #6b5d5d;
-    opacity: 50%;
-}
-
 nav {
-    position: absolute;
-    background-color: rgba(21, 21, 21, 0.965);
-    position: fixed;
-    width: 100%;
-    height: 65vh;
-    top: -50vh;
-    left: 0;
-    z-index: 1;
-    overflow: hidden;
-    transform: translateY(-50vh);
-    transition: all 0.5s;
-    opacity: 100%;
-    z-index: 20;
+  text-align: center;
+  vertical-align: middle;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 8vh;
+  left: 0;
+  opacity: 100%;
+  z-index: 20;
+  background-color: rgba(15, 15, 15, 1);
+  padding-bottom: 20px;
 }
 
-nav.active{
-  transform: translateY(50vh);
-  transition: all 0.4s;
-}
 
 nav div{
     color: white;
@@ -132,22 +107,6 @@ nav div{
     margin-top: 10px;
 }
 
-
-  .fechar {
-    font: bold;
-    font-weight: 700;
-    font-size: 30px;
-    width: 10px;
-    height: 10px;
-    cursor: pointer;
-    margin-left: 94%;
-  }
- .fechar:hover{
-    font: bold;
-    font-weight: 700;
-    color: rgb(120, 22, 22);
-    transform: translateY(-2px);
-} 
 
 
 </style>

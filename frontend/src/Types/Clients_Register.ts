@@ -4,14 +4,15 @@ export type client = {
     cod_categories_client: number;
   }
 
-export type Relational = {
-    cod_clients: number,
-    cod_relational: number,
+export type relational = {
+    cod_radiologist: number,
+    cod_clinic: number,
     id: number
 
 }
 
-export type relationalData {
-    cod_clients: number,
-    cod_relational: number,
+export type relationalData = {
+    cod_radiologist: number,
+    cod_clinic: number,
+    related_day: string,
 }
