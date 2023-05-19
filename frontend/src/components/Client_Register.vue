@@ -7,8 +7,9 @@
         </div>
 
         <div class="form">
-          <p><label for='cCor'>Cor: </label>
-            <input type="color" name='tCor' id="cCor" value="#0000FF"></p>
+            <input type="color" v-bind:name="'cor' + n" id="cCor" value="#0000FF" v-for="n in colors">
+            <button type="button" v-on:click="colors++">+</button>
+            <button type="button" v-on:click="colors--">-</button>
         </div>
         
         <div class="form">
@@ -19,7 +20,7 @@
 
 
         <div  class="form">
-          <input name="Tipo" type="radio" value="2" v-on:click="set(2)">
+          <input name="Tipo" type="radio" value="2  " v-on:click="set(2)">
           <label for=""> Radiologista </label>
           <input name="Tipo" type="radio" value="1" v-on:click="set(1)">
           <label for=""> Clínica </label>
@@ -82,6 +83,7 @@
             related: [] as number[],
             clients: [] as client[],
             cities: 1 as number,
+            colors: 1 as number
           }
       },
 
@@ -147,13 +149,17 @@
           const form = document.getElementById("Cadastro_cliente") as any;
           
           let weekDays: string = "";
-          let city = ""
+          let city = "";
+          let colors = "";
+
+          for(let i = 1; i <= this.colors; i++) {
+            colors += form.elements.namedItem(`cor${i}`).value;
+            if (i =! this.colors) colors += ",";
+          }
 
           for(let i = 1; i <= this.cities; i++) {
-            city += form.elements.namedItem(`city${i}`).value
-            if (i != this.cities) {
-              city += ","
-            }
+            city += form.elements.namedItem(`city${i}`).value;
+            if (i =! this.cities) city += ",";
           }
 
           if (form.elements.namedItem("monday")!.checked) {
@@ -175,7 +181,7 @@
 
               name: form.elements.namedItem("Nome").value,
               cod_categories_client: form.elements.namedItem("Tipo").value,
-              color: form.elements.namedItem("cCor").value,
+              color: colors,
               city: city,
               week_days: weekDays,
           
