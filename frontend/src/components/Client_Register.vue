@@ -150,7 +150,10 @@
           let city = ""
 
           for(let i = 1; i <= this.cities; i++) {
-            city += form.elements.namedItem(`city${i}`).value + ","
+            city += form.elements.namedItem(`city${i}`).value
+            if (i != this.cities) {
+              city += ","
+            }
           }
 
           if (form.elements.namedItem("monday")!.checked) {

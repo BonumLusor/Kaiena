@@ -1,5 +1,19 @@
 <template>
   <div>
-    <H1> Página de entrada </H1>
+    
+    <home></home>
+
   </div>
 </template>
+
+<script lang="ts">
+
+  import home from "../components/Home.vue"
+
+  export default{
+    components: {
+      home,
+    }
+  }
+
+</script>

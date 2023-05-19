@@ -1,6 +1,8 @@
 <template>
   <HambMenu></HambMenu>
-  <router-view></router-view>
+  <body>
+    <router-view></router-view>
+  </body>
 </template>
 
 <script lang="ts">
@@ -24,10 +26,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow: hidden;
   }
   tabela {
     width: 100vw;
     height: 100vh;
+  }
+  body {
+    overflow: hidden;
   }
 </style>

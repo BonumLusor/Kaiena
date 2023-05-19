@@ -2,6 +2,9 @@ export type client = {
     name: string;
     id: number;
     cod_categories_client: number;
+    color: string | null;
+    city: string | null;
+    week_dats: string | null;
   }
 
 export type relational = {
