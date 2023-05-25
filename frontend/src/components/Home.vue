@@ -1,10 +1,25 @@
 <template>
   <div class="container">
+
     <div class="grid-container">
-      <div v-for="item in clients" class="client" v-bind:id="item.name">{{ item.name }}</div>
+      <div v-for="item, index in clients" class="client" v-bind:id="item.name" :key="item.id" v-on:click="selected = index; cardToggle();">{{ item.name }}</div>
     </div>
     
+
+    <div class="card" id="infoCard">
+      <p v-if="selected != null">{{ clients[selected].name }}</p>
+      <p v-if="selected != null">{{ clients[selected].city }}</p>
+      <p v-if="selected != null">{{ clients[selected].color }}</p>
+      <p v-if="selected != null && clients[selected].cod_categories_client == 2"> Dentista </p>
+      <p v-else-if="selected != null && clients[selected].cod_categories_client == 1"> Clínica </p>
+      <router-link v-if="selected != null" class="link" :to="{name: 'Calendar', params: {id:clients[selected].id}}" v-on:click="{store.commit('setStage', 'Calendar');}"> Ir para o cronograma </router-link>
+      <button  id="close" v-on:click="selected = null; cardToggle()">&times;</button>
+    </div>
+
   </div>
+  
+  
+
 </template>
 
 <script lang="ts">
@@ -12,14 +27,21 @@ import { defineComponent } from 'vue';
 import { client } from '../Types/Clients_Register';
 import { border } from '../Types/Home';
 import axios from "axios";
+import { useStore } from '../store/index';
 
 export default defineComponent({
+
+  setup() {
+    const store = useStore()
+    return { store }
+  },
 
   name: 'Home',
 
   data() {
     return {
       clients: [] as client[],
+      selected: null as number | null,
     }
   },
 
@@ -41,7 +63,7 @@ export default defineComponent({
 
         if (item.color != null) {
 
-          let border = "linear-gradient(45deg, "
+          let border = "linear-gradient(0deg, "
 
           const length = item.color!.split(",").length
           border = "linear-gradient(45deg, "
@@ -86,12 +108,36 @@ export default defineComponent({
     }
   },
 
+  methods: {
+  
+    cardToggle(index = null) {
+
+      let card: HTMLElement = document.getElementById("infoCard")!; 
+      if (card?.classList.contains("active")) {
+        card.classList.remove("active");
+      }
+      else {
+        card?.classList.add("active");
+        document.onkeydown = function(evt) {
+          const event = evt || window.event;
+          var isEscape = false;
+          if ("key" in event) {
+            isEscape = (event.key === "Escape" || event.key === "Esc");
+          }
+          if (isEscape) {
+            card.classList.remove("active");
+          } 
+        };
+      }
+
+    }
+  }
 
 })
 
 </script>
 
-<style>
+<style scoped>
 
   .grid-container {
     display: grid;
@@ -129,6 +175,87 @@ export default defineComponent({
     height: 100%;
     width: 100%;
     text-align: center;
+    cursor: pointer;
+  }
+
+  .card {
+    position: absolute;
+    top: 10vh;
+    left: 10vw;
+    width: 80vw;
+    height: 80vh;
+    background-color: rgba(21, 21, 21, 1);
+    color: white;
+    z-index: -11111;
+    opacity: 0;
+    transition: opacity 0.5s;
+    transition-delay: z-index 1;
+  }
+
+  .card.active {
+    opacity: 1;
+    z-index: 10;
+    transition: opacity 0.3s;
+  }
+
+  #close {
+    font-size: 25px;
+    font: bold;
+    font-weight: 700;
+    position: absolute;
+    top: 0vh;
+    left: 75vw;
+    width: 10px;
+    height: 10px;
+  }
+
+  #close:hover {
+  color: rgb(120, 22, 22);
+  background-color: transparent;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+  }
+
+  button {
+    margin-left: 2.5vw;
+    appearance: none;
+    background-color: transparent;
+    border: 0px;
+    border-radius: 15px;
+    box-sizing: border-box;
+    color: #3B3B3B;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    padding: 10px;
+    padding-left: 0px;
+  }
+
+  button:hover {
+  color: #fff;
+  background-color: #1A1A1A;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+  }
+
+  .link {
+    margin-left: 2.5vw;
+    appearance: none;
+    background-color: transparent;
+    border: 0px;
+    border-radius: 15px;
+    box-sizing: border-box;
+    color: #3B3B3B;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    padding: 10px;
+    padding-left: 0px;
+    text-decoration: none;
   }
 
 </style>

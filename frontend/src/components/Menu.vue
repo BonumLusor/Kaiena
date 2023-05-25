@@ -2,13 +2,10 @@
     <div>
       <nav id="menu">        
         <div class="option">
-          <router-link class="link" to="/" id="Home" v-on:click="{store.commit('setStage', 'Home'); activePage()}"> Home </router-link>
-        </div>
-        <div class="option">
-          <router-link class="link" to="/Calendar" id="Calendar" v-on:click="{store.commit('setStage', 'Calendar'); activePage()}"> Calendário </router-link>
+          <router-link class="link" to="/" id="Home" v-on:click="{store.commit('setStage', 'Home');}"> Home </router-link>
         </div>
         <div class="option" >
-          <router-link class="link" to="/Register" id="Register" v-on:click="{store.commit('setStage', 'Register'); activePage()}"> Cadastro </router-link>
+          <router-link class="link" to="/Register" id="Register" v-on:click="{store.commit('setStage', 'Register');}"> Cadastro </router-link>
         </div>
         
 	    </nav>
@@ -36,29 +33,10 @@
 
   methods: {
 
-    activePage() {
-      if (this.store.state.stage == 'Register') {
-        document.getElementById("Register")!.style.color = "green";
-        document.getElementById("Calendar")!.style.color = "white";
-        document.getElementById("Home")!.style.color = "white";
-      }
-      else if (this.store.state.stage == 'Calendar') {
-        document.getElementById("Calendar")!.style.color = "green";
-        document.getElementById("Register")!.style.color = "white";
-        document.getElementById("Home")!.style.color = "white";
-      }
-      else if (this.store.state.stage == 'Home') {
-        document.getElementById("Register")!.style.color = "white";
-        document.getElementById("Home")!.style.color = "green";
-        document.getElementById("Calendar")!.style.color = "white";
-
-      }
-    },
 
   },
 
   mounted () {
-    this.activePage()
   }
 
 

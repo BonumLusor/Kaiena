@@ -3,7 +3,7 @@
     <br>
     <div class="title">
       <h1> {{ currentMonth }} / {{ year }} </h1>
-      <h3>Cliente</h3> 
+      <h3>{{ currentClient.name }}</h3> 
     </div>
 
     <div class="navButtons">
@@ -14,12 +14,15 @@
     <br>
     <div class="grid-container-header">
       <div class="calendar" v-for = "item in weekDaysName" :key="item.id">
-        {{ item.day }}
-      </div>  
+        <div class="content">{{ item.day }}</div>
+      </div>
     </div>
-    <div class="grid-container">
-      <div class="day" v-for="item in month" v-on:click="cardToggle(item.monthDay)"> 
-        <div> {{ item.monthDay }}  </div>
+    <div class="grid-container" id="grid">
+      <div class="day" v-for="item, index in month" v-on:click="cardToggle(item.monthDay)" :key="index"> 
+        <div class="content"> {{ item.monthDay }}  </div>
+      </div>
+      <div class="day" v-for="n in (25 - month.length)" :key="n">
+        <div class="content"></div>
       </div>
     </div>
 
@@ -34,7 +37,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { numberMonth } from '../Types/Calendar';
-// import { promise } from '../../node_modules/mysql2'
+import axios from "axios";
+import { client, relationalData, relational } from '../Types/Clients_Register'
 
 export default defineComponent({
   name: "calendar",
@@ -52,11 +56,13 @@ export default defineComponent({
       numberMonth: 0 as number,
       currentMonth: null as string | null,
       year: 0 as number,
-      date: new Date()
+      date: new Date(),
+      currentClient: {} as client,
+      color: "" as string
     }
   },
   methods:{
-    cardToggle(monthDay: number) {
+    cardToggle(monthDay: number | null) {
 
       this.selected = monthDay;
 
@@ -222,6 +228,7 @@ export default defineComponent({
       if (this.numberMonth == 11) this.currentMonth = "Dezembro"
     this.year = this.date.getFullYear()
   },
+
   mounted(){  
     
     let monthLength = 0
@@ -263,8 +270,72 @@ export default defineComponent({
       this.month.unshift({monthDay: null, weekDay: null})
       this.month.unshift({monthDay: null, weekDay: null})
     }
+
+    setTimeout(() => {
+      document.getElementById("grid")!.style.backgroundImage = this.color
+    }, 500)
+    
   },
 
+  async created() {
+
+
+    try {
+
+      const response = await axios.get(`http://localhost:3001/clients/${this.$route.params.id}`);
+
+      this.currentClient = response.data.data
+
+      console.log(this.currentClient)
+
+    } catch (err) {
+
+      
+
+    } finally {
+
+      if (this.currentClient.color != null) {
+
+        let border = "linear-gradient(45deg, "
+
+        const length = this.currentClient.color!.split(",").length
+        border = "linear-gradient(45deg, "
+
+        if (length != 1) {
+
+          this.currentClient.color!.split(",").forEach((color, index) => {
+
+            let percent
+            if (index == 0) percent = 0
+            else if (index == length - 1) percent = 100
+            else percent = index * Math.round(100/(length - 1))
+            
+
+            border += `${color} ${percent}% `
+
+            if (index != length - 1) {
+              border += ","
+            }
+            else {
+              border += ")"
+            }
+
+          })
+
+          this.color = border
+
+        }
+        else {
+          document.getElementById("grid")!.style.backgroundColor =  this.currentClient.color
+        }
+
+      }
+      else  {
+        this.color = "#fff"
+        document.getElementById("grid")!.style.backgroundColor = this.color
+      }
+    }   
+  }
   
   
 })
@@ -281,24 +352,21 @@ export default defineComponent({
   }
 
   body {
-    background-color: rgba(21, 21, 21, 0.965);
+    background-color: #1e1e1e;
     color: white;
     height: 92vh;
     width: 100vw;
     overflow: hidden;
   }
   .calendar {
-    border-color: rgb(185, 185, 185);
-    border-style: solid;
-    border-bottom: none;
+    border-bottom: solid 2px;
+    border-color: transparent;
     height: 100%;
     width: 100%;
     text-align: center;
     font-size: 1.5em;
   }
   .day {
-    border-color: rgb(185, 185, 185);
-    border-style: solid;
     height: 100%;
     width: 100%;
     text-align: left;
@@ -312,6 +380,8 @@ export default defineComponent({
   }
   .grid-container {
     display: grid;
+    border: 2px;
+    border-color: transparent;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
     -webkit-touch-callout: none; /* iPhone OS, Safari */
@@ -320,8 +390,8 @@ export default defineComponent({
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+ */
     user-select: none;
-    row-gap: 3px;
-    column-gap: 3px;
+    row-gap: 4px;
+    column-gap: 4px;
     height: 80%;
     width: 80%;
   }
@@ -335,9 +405,10 @@ export default defineComponent({
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+ */
     user-select: none;
-    row-gap: 3px;
-    column-gap: 3px;
+    row-gap: 4px;
+    column-gap: 4px;
     width: 80%;
+    background-clip: border-box;
   }
 
   .card {
@@ -423,6 +494,17 @@ export default defineComponent({
     margin-left: 7.5%;
     padding: 0;
     padding-bottom: -1vh;
+  }
+
+  .grid-container {
+    background-clip: border-box;
+  }
+
+  .content {
+    background-color: #1e1e1e;
+    width: 100%;
+    height: 100%;
+    margin-top: 2px;
   }
 
 </style>

@@ -7,7 +7,7 @@
         </div>
 
         <div class="form">
-            <input type="color" v-bind:name="'cor' + n" id="cCor" value="#0000FF" v-for="n in colors">
+            <input type="color" v-bind:name="'cor' + n" id="cCor" value="#0000FF" v-for="n, index in colors" :key="index">
             <button type="button" v-on:click="colors++">+</button>
             <button type="button" v-on:click="colors--">-</button>
         </div>
@@ -154,12 +154,12 @@
 
           for(let i = 1; i <= this.colors; i++) {
             colors += form.elements.namedItem(`cor${i}`).value;
-            if (i =! this.colors) colors += ",";
+            if (i != this.colors) colors += ",";
           }
 
           for(let i = 1; i <= this.cities; i++) {
             city += form.elements.namedItem(`city${i}`).value;
-            if (i =! this.cities) city += ",";
+            if (i != this.cities) city += ",";
           }
 
           if (form.elements.namedItem("monday")!.checked) {

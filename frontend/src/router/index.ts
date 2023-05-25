@@ -15,6 +15,11 @@ const routes = [
   {
     path: '/Register',
     component: RegisterView,
+  },
+  {
+    name: 'Calendar',
+    path: '/Calendar/:id',
+    component: calendarView,
   }
 ]
 
