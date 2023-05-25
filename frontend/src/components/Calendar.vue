@@ -67,8 +67,22 @@ export default defineComponent({
       this.selected = monthDay;
 
       let card: HTMLElement = document.getElementById("infoCard")!;
-      if (card?.classList.contains("active")) card.classList.remove("active");
-      else card?.classList.add("active");
+      if (card?.classList.contains("active")) {
+        card.classList.remove("active");
+      }
+      else {
+        card?.classList.add("active");
+        document.onkeydown = function(evt) {
+          const event = evt || window.event;
+          var isEscape = false;
+          if ("key" in event) {
+            isEscape = (event.key === "Escape" || event.key === "Esc");
+          }
+          if (isEscape) {
+            card.classList.remove("active");
+          } 
+        };
+      }
     },
 
     nextMonth(){ 
