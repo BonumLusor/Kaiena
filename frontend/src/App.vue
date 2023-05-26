@@ -1,5 +1,4 @@
 <template>
-  <HambMenu></HambMenu>
   <body>
     <router-view></router-view>
   </body>
@@ -30,8 +29,5 @@
   tabela {
     width: 100vw;
     height: 100vh;
-  }
-  body {
-    overflow: hidden;
   }
 </style>

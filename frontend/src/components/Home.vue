@@ -2,19 +2,27 @@
   <div class="container">
 
     <div class="grid-container">
-      <div v-for="item, index in clients" class="client" v-bind:id="item.name" :key="item.id" v-on:click="selected = index; cardToggle();">{{ item.name }}</div>
+      <div v-for="item, index in clients" class="client" v-bind:id="item.name" :key="item.id" v-on:click="modalToggle(index)">{{ item.name }}</div>
+      <router-link to="/register" class="client add addLink">
+        +
+      </router-link>
     </div>
-    
 
-    <div class="card" id="infoCard">
-      <p v-if="selected != null">{{ clients[selected].name }}</p>
-      <p v-if="selected != null">{{ clients[selected].city }}</p>
-      <p v-if="selected != null">{{ clients[selected].color }}</p>
-      <p v-if="selected != null && clients[selected].cod_categories_client == 2"> Dentista </p>
-      <p v-else-if="selected != null && clients[selected].cod_categories_client == 1"> Clínica </p>
-      <router-link v-if="selected != null" class="link" :to="{name: 'Calendar', params: {id:clients[selected].id}}" v-on:click="{store.commit('setStage', 'Calendar');}"> Ir para o cronograma </router-link>
-      <button  id="close" v-on:click="selected = null; cardToggle()">&times;</button>
-    </div>
+    <div>
+
+    <Modal v-if="showModal" @close="showModal = false">
+      <template #header>
+        <h3 v-if="selected != null">{{ clients[selected].name }}</h3>
+      </template>
+        <p v-if="selected != null && clients[selected].cod_categories_client == 2"> Dentista </p>
+        <p v-else-if="selected != null && clients[selected].cod_categories_client == 1"> Clínica </p>
+        <p v-if="selected != null">{{ clients[selected].city }}</p>
+        <p v-if="selected != null">{{ clients[selected].color }}</p>
+      <template #footer>
+        <router-link v-if="selected != null" class="link" :to="{name: 'Calendar', params: {id:clients[selected].id}}" v-on:click="{store.commit('setStage', 'Calendar');}"> Ir para o cronograma </router-link>
+      </template>
+    </Modal>
+  </div>
 
   </div>
   
@@ -23,17 +31,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { client } from '../Types/Clients_Register';
-import { border } from '../Types/Home';
 import axios from "axios";
 import { useStore } from '../store/index';
+import Modal from './modal.vue';
 
 export default defineComponent({
 
   setup() {
     const store = useStore()
-    return { store }
+    const showModal = ref(false);
+    return { store, showModal }
   },
 
   name: 'Home',
@@ -43,6 +52,10 @@ export default defineComponent({
       clients: [] as client[],
       selected: null as number | null,
     }
+  },
+
+  components: {
+    Modal
   },
 
   async created() {
@@ -60,6 +73,8 @@ export default defineComponent({
     } finally {
 
       this.clients.forEach((item) => {
+
+        let border: string
 
         if (item.color != null) {
 
@@ -89,19 +104,16 @@ export default defineComponent({
 
             })
 
-            item.color = border
-
+            console.log(border)
+            setTimeout(() => {
+              document.getElementById(item.name)!.style.borderImage = border; 
+              document.getElementById(item.name)!.style.borderImageSlice = "1";
+              document.getElementById(item.name)!.style.borderImageWidth = "3px";
+            }, 0)
           }
-      }
-      setTimeout(() => {
-        this.clients.forEach( (item) => {
-
-          document.getElementById(item.name)!.style.borderImage = item.color!; 
-          document.getElementById(item.name)!.style.borderImageSlice = "1";
-          document.getElementById(item.name)!.style.borderImageWidth = "2px";
-
-        })
-      }, 0)
+          
+        }
+      
        
       })
 
@@ -110,25 +122,11 @@ export default defineComponent({
 
   methods: {
   
-    cardToggle(index = null) {
+    modalToggle(index: number | null  = null) {
 
-      let card: HTMLElement = document.getElementById("infoCard")!; 
-      if (card?.classList.contains("active")) {
-        card.classList.remove("active");
-      }
-      else {
-        card?.classList.add("active");
-        document.onkeydown = function(evt) {
-          const event = evt || window.event;
-          var isEscape = false;
-          if ("key" in event) {
-            isEscape = (event.key === "Escape" || event.key === "Esc");
-          }
-          if (isEscape) {
-            card.classList.remove("active");
-          } 
-        };
-      }
+      this.selected = index;
+
+      this.showModal = !this.showModal;
 
     }
   }
@@ -141,7 +139,7 @@ export default defineComponent({
 
   .grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
     -webkit-touch-callout: none; /* iPhone OS, Safari */
     -webkit-user-select: none; /* Chrome, Safari 3 */
     -khtml-user-select: none; /* Safari 2 */
@@ -149,9 +147,10 @@ export default defineComponent({
     -ms-user-select: none; /* IE10+ */
     user-select: none;
     row-gap: 3px;
-    column-gap: 3px;
-    height: 80%;
-    width: 80%;
+    column-gap: 6px;
+    width: 100%;
+    height: fit-content;
+    min-height: 100vh;
   }
 
   .container {
@@ -165,17 +164,19 @@ export default defineComponent({
     margin-top: 5vh ;
     padding: 0;
     margin: 0;
-    height: 94vh;
-    overflow: hidden;
+    height: fit-content;
 
   }
 
   .client {
-    border: solid 1px;
-    height: 100%;
+    border: 6px;
+    height: 12.5rem;
     width: 100%;
     text-align: center;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .card {
@@ -256,6 +257,19 @@ export default defineComponent({
     padding: 10px;
     padding-left: 0px;
     text-decoration: none;
+  }
+
+  .add {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+    border: solid 4px white
+  }
+
+  .addLink {
+    text-decoration: none;
+    color: white;
   }
 
 </style>

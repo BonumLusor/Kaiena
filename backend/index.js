@@ -21,7 +21,7 @@ app.route('/clients')
         let retVal = {};
         
         try {
-            const query = 'SELECT * FROM clients';
+            const query = 'SELECT * FROM clients ORDER BY name;';
             const [rows] = await connection.query(query);
             retVal.data = rows;
         } catch (error) {

@@ -2,46 +2,67 @@
   <body>
     <br>
     <div class="title">
-      <h1> {{ currentMonth }} / {{ year }} </h1>
-      <h3>{{ currentClient.name }}</h3> 
-    </div>
-
-    <div class="navButtons">
-      <button v-on:click="pastMonth"> Último mês </button>
-      <button v-on:click="nextMonth"> Próximo mês </button>  
+      <div id="name"> <h3>{{ currentClient.name }}</h3> </div>
+      <div class="month"> 
+        <h1> {{ currentMonth }} / {{ year }} </h1> 
+        <div class="navButtons">
+          <button v-on:click="pastMonth"> Último mês </button>
+          <button v-on:click="nextMonth"> Próximo mês </button>  
+        </div>
+      </div>
+      
     </div>
 
     <br>
-    <div class="grid-container-header">
-      <div class="calendar" v-for = "item in weekDaysName" :key="item.id">
-        <div class="content">{{ item.day }}</div>
+    <div class="calendar">
+
+      <div class="grid-container-header">
+        <div class="weekDays" v-for = "item in weekDaysName" :key="item.id">
+          <div class="content">{{ item.day }}</div>
+        </div>
       </div>
-    </div>
-    <div class="grid-container" id="grid">
-      <div class="day" v-for="item, index in month" v-on:click="cardToggle(item.monthDay)" :key="index"> 
-        <div class="content"> {{ item.monthDay }}  </div>
+      <div class="grid-container" id="grid">
+        <div class="day" v-for="item, index in month" v-on:click="modalToggle(item.monthDay)" :key="index"> 
+          <div class="content"> {{ item.monthDay }}  </div>
+        </div>
+        <div class="day" v-for="n in (25 - month.length)" :key="n">
+          <div class="content"></div>
+        </div>
       </div>
-      <div class="day" v-for="n in (25 - month.length)" :key="n">
-        <div class="content"></div>
-      </div>
+
     </div>
 
-      <div class="card" id="infoCard">
-        <div> {{ selected }} </div>
-        <button v-on:click=" selected = null; cardToggle(null)" id="close">&times;</button>
-      </div>
+    <Modal v-if="showModal" @close="showModal = false">
+      <template #header>
+        <h3 v-if="selected != null">{{ selected }}</h3>
+      </template>
+        <p></p>
+      <template #footer>
+      </template>
+    </Modal>
 
   </body>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { numberMonth } from '../Types/Calendar';
 import axios from "axios";
 import { client, relationalData, relational } from '../Types/Clients_Register'
+import Modal from './modal.vue';
 
 export default defineComponent({
-  name: "calendar",
+  name: "Calendar",
+  
+  setup() {
+    const showModal = ref(false);
+    return { showModal }
+  },
+
+  components: {
+    Modal
+  },
+
   data(){
     return{
       weekDaysName: [
@@ -58,31 +79,15 @@ export default defineComponent({
       year: 0 as number,
       date: new Date(),
       currentClient: {} as client,
-      color: "" as string
     }
   },
   methods:{
-    cardToggle(monthDay: number | null) {
+    modalToggle(index: number | null  = null) {
 
-      this.selected = monthDay;
+      this.selected = index;
 
-      let card: HTMLElement = document.getElementById("infoCard")!;
-      if (card?.classList.contains("active")) {
-        card.classList.remove("active");
-      }
-      else {
-        card?.classList.add("active");
-        document.onkeydown = function(evt) {
-          const event = evt || window.event;
-          var isEscape = false;
-          if ("key" in event) {
-            isEscape = (event.key === "Escape" || event.key === "Esc");
-          }
-          if (isEscape) {
-            card.classList.remove("active");
-          } 
-        };
-      }
+      this.showModal = !this.showModal;
+
     },
 
     nextMonth(){ 
@@ -284,10 +289,6 @@ export default defineComponent({
       this.month.unshift({monthDay: null, weekDay: null})
       this.month.unshift({monthDay: null, weekDay: null})
     }
-
-    setTimeout(() => {
-      document.getElementById("grid")!.style.backgroundImage = this.color
-    }, 500)
     
   },
 
@@ -336,7 +337,8 @@ export default defineComponent({
 
           })
 
-          this.color = border
+          document.getElementById("grid")!.style.backgroundImage = border
+          document.getElementById("name")!.style.backgroundImage = border
 
         }
         else {
@@ -345,8 +347,7 @@ export default defineComponent({
 
       }
       else  {
-        this.color = "#fff"
-        document.getElementById("grid")!.style.backgroundColor = this.color
+        document.getElementById("grid")!.style.backgroundColor = "#fff";
       }
     }   
   }
@@ -368,11 +369,13 @@ export default defineComponent({
   body {
     background-color: #1e1e1e;
     color: white;
-    height: 92vh;
+    height: 100vh;
     width: 100vw;
     overflow: hidden;
+    padding: 0;
+    margin: 0;
   }
-  .calendar {
+  .weekDays {
     border-bottom: solid 2px;
     border-color: transparent;
     height: 100%;
@@ -389,8 +392,13 @@ export default defineComponent({
     column-gap: 3px;
   }
 
-  div {
-    margin: auto auto;
+  .calendar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    margin-top: -3.4rem;
   }
   .grid-container {
     display: grid;
@@ -407,7 +415,7 @@ export default defineComponent({
     row-gap: 4px;
     column-gap: 4px;
     height: 80%;
-    width: 80%;
+    width: 100%
   }
   .grid-container-header {
     margin-top: -12px;
@@ -421,7 +429,7 @@ export default defineComponent({
     user-select: none;
     row-gap: 4px;
     column-gap: 4px;
-    width: 80%;
+    width: 100%;
     background-clip: border-box;
   }
 
@@ -484,41 +492,56 @@ export default defineComponent({
   }
 
   button:hover {
-  color: #fff;
-  background-color: #1A1A1A;
-  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
-  transform: translateY(-2px);
+    color: #fff;
+    background-color: #1A1A1A;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
   }
 
   #close:hover {
-  color: rgb(120, 22, 22);
-  background-color: transparent;
-  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
-  transform: translateY(-2px);
+    color: rgb(120, 22, 22);
+    background-color: transparent;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
   }
 
   .title {
     display: flex;
-    z-index: 10;
-    margin-left: 7.5%;
-    margin-bottom: -1vh;
+    width: 100vw;
+    margin-top: 0px;
   }
 
   .navButtons {
+    display: flex;
     margin-left: 7.5%;
     padding: 0;
     padding-bottom: -1vh;
   }
 
-  .grid-container {
-    background-clip: border-box;
-  }
 
   .content {
     background-color: #1e1e1e;
     width: 100%;
     height: 100%;
     margin-top: 2px;
+  }
+
+  .month {
+    margin-left: 55vw;
+    align-self: flex-end;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    width: 55rem;
+    align-items: center;
+  }
+
+  #name {
+    font-size: 1.5rem;
+    background-clip: text;
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent;
+    width: 40rem
   }
 
 </style>
