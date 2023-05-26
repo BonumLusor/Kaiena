@@ -35,7 +35,7 @@ import { defineComponent, ref } from 'vue';
 import { client } from '../Types/Clients_Register';
 import axios from "axios";
 import { useStore } from '../store/index';
-import Modal from './modal.vue';
+import Modal from './partials/modal.vue';
 
 export default defineComponent({
 

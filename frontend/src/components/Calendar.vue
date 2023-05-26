@@ -49,7 +49,7 @@ import { defineComponent, ref } from 'vue';
 import { numberMonth } from '../Types/Calendar';
 import axios from "axios";
 import { client, relationalData, relational } from '../Types/Clients_Register'
-import Modal from './modal.vue';
+import Modal from './partials/modal.vue';
 
 export default defineComponent({
   name: "Calendar",
