@@ -3,7 +3,10 @@
     <div>
       <form id="Cadastro_cliente">
         <div class="form">
-          <input name="Nome" type="text" placeholder="Nome" required>
+          <input name="Nome" required>
+          <label class="text-over" for="name">
+            <span>Nome</span>
+          </label>
         </div>
 
         <div class="form">
@@ -13,7 +16,10 @@
         </div>
         
         <div class="form">
-          <input v-bind:name="'city' + n" type="text" placeholder="Cidade" required v-for="n in cities" :key="n">
+          <input v-bind:name="'city' + n" type="text"  required v-for="n in cities" :key="n">
+          <label class="text-over" for="city">
+            <span>Cidade</span>
+          </label>
           <button type="button" v-on:click="cities++">+</button>
           <button type="button" v-on:click="cities--">-</button>
         </div>
@@ -27,8 +33,6 @@
         </div>
 
         <div class="form">
-          <input name="all" type="checkbox" value="1">
-            <label for=""> Dias úteis </label>
           <input name="monday" type="checkbox" value="monday">
             <label for=""> Segunda </label>
           <input name="tuesday" type="checkbox" value="tuesday">
@@ -42,7 +46,7 @@
         </div>
 
         <div class="form">
-          <select name="Relacional" id="colaborated" v-on:click="colaborated">
+          <select name="Relacional" id="colaborated" v-on:click="colaborated" class="selector">
             <option>Sem colaborativo</option>
             <option v-for="item in current" v-bind:value="item.id" v-bind:key="item.id"> {{ item.name }} </option>
           </select>  
@@ -233,5 +237,6 @@
     .enabled {
       display: block;
     }
+
 
   </style>
