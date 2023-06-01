@@ -106,9 +106,9 @@ export default defineComponent({
 
             console.log(border)
             setTimeout(() => {
-              document.getElementById(item.name)!.style.borderImage = border; 
-              document.getElementById(item.name)!.style.borderImageSlice = "1";
-              document.getElementById(item.name)!.style.borderImageWidth = "3px";
+              document.getElementById(item.name)!.style.background = border; 
+              //document.getElementById(item.name)!.style.borderImageSlice = "1";
+              //document.getElementById(item.name)!.style.borderImageWidth = "3px";
             }, 0)
           }
           
@@ -138,6 +138,9 @@ export default defineComponent({
 <style scoped>
 
   .grid-container {
+    border-radius: 50px; /*1*/
+    border: 3px solid transparent; /*2*/
+    font-size: large;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
     -webkit-touch-callout: none; /* iPhone OS, Safari */
@@ -151,6 +154,8 @@ export default defineComponent({
     width: 100%;
     height: fit-content;
     min-height: 100vh;
+    padding: 3rem;
+    border-radius: 30px;
   }
 
   .container {
@@ -165,10 +170,12 @@ export default defineComponent({
     padding: 0;
     margin: 0;
     height: fit-content;
+    scroll-behavior: #1e1e1e;
 
   }
 
   .client {
+    border-radius: 30px;
     border: 6px;
     height: 12.5rem;
     width: 100%;
@@ -177,6 +184,7 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 1rem;
   }
 
   .card {
@@ -271,5 +279,7 @@ export default defineComponent({
     text-decoration: none;
     color: white;
   }
+
+
 
 </style>

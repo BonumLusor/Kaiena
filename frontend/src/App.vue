@@ -25,9 +25,25 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: roboto;
+    font-weight: 50;
   }
   tabela {
+    border-radius: 30px;
     width: 100vw;
     height: 100vh;
   }
+  
+  ::-webkit-scrollbar-track {
+    background-color: #1e1e1e;
+}
+::-webkit-scrollbar {
+    width: 6px;
+    background: #1e1e1e;
+}
+::-webkit-scrollbar-thumb {
+    background: #0c0c0c;
+}
+
+  
 </style>
