@@ -108,9 +108,14 @@ export default defineComponent({
 
             console.log(item.name , border)
             setTimeout(() => {
-              document.getElementById(item.name)!.style.borderImage = border; 
-              document.getElementById(item.name)!.style.borderImageSlice = "1";
-              document.getElementById(item.name)!.style.borderImageWidth = "3px";
+
+              document.getElementById(item.name)!.style.border = "double 4px transparent;";
+              document.getElementById(item.name)!.style.borderRadius = "10px";
+              document.getElementById(item.name)!.style.backgroundOrigin = "border-box";
+              document.getElementById(item.name)!.style.backgroundClip = "padding-box, border-box";
+              document.getElementById(item.name)!.style.backgroundImage = border; 
+              document.getElementById(item.name)!.style.boxShadow = "0px 0px 20px 10px rgba(0,0,0,0.75);"; 
+
             }, 0)
           }
           
@@ -146,6 +151,7 @@ export default defineComponent({
   }
   
   .grid-container {
+    font-family: "Montserrat";
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
     -webkit-touch-callout: none; /* iPhone OS, Safari */
@@ -159,6 +165,25 @@ export default defineComponent({
     width: 100%;
     height: fit-content;
     min-height: 100vh;
+    padding: 3rem;
+  }
+
+  .client-card {
+    
+    font-size: 1.25rem;
+    font-weight: 200;
+    background-color: #1a1a1a;
+    width: 97%;
+    height: 95%;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .client-card:hover {
+    background-color: #080808;
+    transition: 0.5s;
   }
 
   .container {
@@ -178,7 +203,7 @@ export default defineComponent({
   }
 
   .client {
-    border: 6px;
+    border: 15px;
     height: 12.5rem;
     width: 100%;
     text-align: center;
@@ -186,26 +211,10 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
-  }
+    border-radius: 10px;
+    
 
-  .card {
-    position: absolute;
-    top: 10vh;
-    left: 10vw;
-    width: 80vw;
-    height: 80vh;
-    background-color: rgba(21, 21, 21, 1);
-    color: white;
-    z-index: -11111;
-    opacity: 0;
-    transition: opacity 0.5s;
-    transition-delay: z-index 1;
-  }
-
-  .card.active {
-    opacity: 1;
-    z-index: 10;
-    transition: opacity 0.3s;
+    
   }
 
   #close {
