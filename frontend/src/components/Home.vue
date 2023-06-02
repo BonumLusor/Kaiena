@@ -80,10 +80,12 @@ export default defineComponent({
 
         if (item.color != null) {
 
-          let border = "linear-gradient(0deg, "
+          let border = ""
+          let hover = ""
 
           const length = item.color!.split(",").length
-          border = "linear-gradient(45deg, "
+          border = "linear-gradient(#1e1e1e, #1e1e1e), linear-gradient(45deg, ";
+          hover = "linear-gradient(#080808, #080808), linear-gradient(45deg, "
 
           if (length != 1) {
 
@@ -96,12 +98,15 @@ export default defineComponent({
               
 
               border += `${color} ${percent}% `
+              hover += `${color} ${percent}% `
 
               if (index != length - 1) {
                 border += ","
+                hover += ","
               }
               else {
                 border += ")"
+                hover += ")"
               }
 
             })
@@ -109,12 +114,17 @@ export default defineComponent({
             console.log(item.name , border)
             setTimeout(() => {
 
-              document.getElementById(item.name)!.style.border = "double 4px transparent;";
-              document.getElementById(item.name)!.style.borderRadius = "10px";
               document.getElementById(item.name)!.style.backgroundOrigin = "border-box";
               document.getElementById(item.name)!.style.backgroundClip = "padding-box, border-box";
+              document.getElementById(item.name)!.style.border = "double 4px transparent;";
+              document.getElementById(item.name)!.style.borderRadius = "10px";
               document.getElementById(item.name)!.style.backgroundImage = border; 
-              document.getElementById(item.name)!.style.boxShadow = "0px 0px 20px 10px rgba(0,0,0,0.75);"; 
+
+              document.getElementById(item.name)!.addEventListener("mouseover", (event) => {
+
+                document.getElementById(item.name)!.style.backgroundImage = hover; 
+
+              });
 
             }, 0)
           }
@@ -171,18 +181,15 @@ export default defineComponent({
   .client-card {
     
     font-size: 1.25rem;
-    font-weight: 200;
-    background-color: #1a1a1a;
-    width: 97%;
-    height: 95%;
+    font-weight: 200; 	
     border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
-  .client-card:hover {
-    background-color: #080808;
+  .client:hover {
+    background-image: linear-gradient(white, white), radial-gradient(circle at top left, #f00,#3020ff);
     transition: 0.5s;
   }
 
@@ -212,7 +219,7 @@ export default defineComponent({
     justify-content: center;
     align-items: center;
     border-radius: 10px;
-    
+    border: double 4px transparent;
 
     
   }
