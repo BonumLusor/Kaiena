@@ -1,5 +1,7 @@
 <template>
-    <div>
+    <div class="container">
+
+    <div class="register-card">
 
       <label class="switchBox">
         <div class="option"> Registrar Post</div>
@@ -15,6 +17,7 @@
 
       <clientRegister v-if="!registerType"></clientRegister>
       
+    </div>
 
     </div>
   </template>
@@ -41,6 +44,38 @@
   </script>
 
   <style scoped>
+
+  * {
+    color: white;
+  }
+
+  .register-card {
+    
+    display: flex;
+    align-items: center;
+    width: 30%;
+    height: 90%;
+    padding: 2rem;
+    flex-direction: column;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border: double 4px transparent;
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    background-image: linear-gradient(#1a1a1a, #1a1a1a), linear-gradient(45deg, #babdae 0% ,#d66928 20% ,#f8d281 40% ,#698616 60% ,#698616 80% ,#8d1a00 100% );
+    overflow: scroll;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    height: 100vh;
+    width: 100vw;
+    color: white;
+    background-color: #1e1e1e ;
+  }
   
   .switch {
   position: relative;
@@ -53,6 +88,7 @@
 .switchBox{
   display: flex;
   flex-direction: row;
+  padding: 1rem;
 }
 
 .option {
@@ -88,23 +124,15 @@
     width: 26px;
     left: 4px;
     bottom: 4px;
-    background-color: #1e1e1e;
+    background-color: #000;
     -webkit-transition: .4s;
     transition: .4s;
   }
 
-  input:checked + .slider {
-    background-color: white;
-  }
-
-  input:focus + .slider {
-    box-shadow: 0 0 1px white;
-  }
-
   input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
+    -webkit-transform: translateX(20px);
+    -ms-transform: translateX(20px);
+    transform: translateX(20px);
   }
 
   /* Rounded sliders */
@@ -112,8 +140,8 @@
     border-radius: 34px;
   }
 
-.slider.round:before {
-  border-radius: 50%;
-}
+  .slider.round:before {
+    border-radius: 50%;
+  }
 
   </style>

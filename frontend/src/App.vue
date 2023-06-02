@@ -33,17 +33,15 @@
     width: 100vw;
     height: 100vh;
   }
-  
+
   ::-webkit-scrollbar-track {
     background-color: #1e1e1e;
 }
 ::-webkit-scrollbar {
     width: 6px;
-    background: #1e1e1e;
+    background: #0f0f0f;
 }
 ::-webkit-scrollbar-thumb {
     background: #0c0c0c;
 }
-
-  
 </style>

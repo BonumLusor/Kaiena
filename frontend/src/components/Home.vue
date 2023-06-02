@@ -2,7 +2,9 @@
   <div class="container">
 
     <div class="grid-container">
-      <div v-for="item, index in clients" class="client" v-bind:id="item.name" :key="item.id" v-on:click="modalToggle(index)">{{ item.name }}</div>
+      <div v-for="item, index in clients" class="client" v-bind:id="item.name" :key="item.id" v-on:click="modalToggle(index)">
+        <p class="client-card">{{ item.name }}</p>
+      </div>
       <router-link to="/register" class="client add addLink">
         +
       </router-link>
@@ -104,11 +106,11 @@ export default defineComponent({
 
             })
 
-            console.log(border)
+            console.log(item.name , border)
             setTimeout(() => {
-              document.getElementById(item.name)!.style.background = border; 
-              //document.getElementById(item.name)!.style.borderImageSlice = "1";
-              //document.getElementById(item.name)!.style.borderImageWidth = "3px";
+              document.getElementById(item.name)!.style.borderImage = border; 
+              document.getElementById(item.name)!.style.borderImageSlice = "1";
+              document.getElementById(item.name)!.style.borderImageWidth = "3px";
             }, 0)
           }
           
@@ -136,11 +138,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
+  @font-face {
+    font-family: "Comfortaa" ;
+    src: url(../../fontes/Comfortaa-Regular.ttf);
+  }
+  
   .grid-container {
-    border-radius: 50px; /*1*/
-    border: 3px solid transparent; /*2*/
-    font-size: large;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
     -webkit-touch-callout: none; /* iPhone OS, Safari */
@@ -149,13 +154,11 @@ export default defineComponent({
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+ */
     user-select: none;
-    row-gap: 3px;
-    column-gap: 6px;
+    row-gap: 20px;
+    column-gap: 20px;
     width: 100%;
     height: fit-content;
     min-height: 100vh;
-    padding: 3rem;
-    border-radius: 30px;
   }
 
   .container {
@@ -164,7 +167,7 @@ export default defineComponent({
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgba(21, 21, 21, 0.965);
+    background-color: #1e1e1e;
     color: white;
     margin-top: 5vh ;
     padding: 0;
@@ -175,7 +178,6 @@ export default defineComponent({
   }
 
   .client {
-    border-radius: 30px;
     border: 6px;
     height: 12.5rem;
     width: 100%;
@@ -184,7 +186,6 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
   }
 
   .card {
