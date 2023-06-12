@@ -8,9 +8,9 @@
         </label>
       </div>
       <div class="form">
-        <select name="Tipo" class="selector" required>
+        <select name="Tipo" class="selector" required v-if="types.length > 0">
           <option value="">Tipo</option>
-          <option v-for="item in types" :key="item.id"> {{ item.name }} </option>
+          <option v-for="type in types" :key="type.id" :value="type.id"> {{ type.name }} </option>
         </select>
       </div>
       <div class="form checkbox">
@@ -20,7 +20,29 @@
         <label for=""> Clínica </label>
       </div>
       <div class="form">
-        <input name="Descricao" type="text" placeholder="Descrição" required>
+        <input name="linkCuradoria">
+        <label class="text-over" for="link_cura">
+          <span>Link da curadoria</span>
+        </label>
+      </div>
+
+      <div class="form">
+        <select name="Frequência" class="selector" required>
+          <option value="">Frequência</option>
+          <option v-for="item in frequency" :key="item.id" :value="item.id"> {{ item.frequency }} </option>
+        </select>
+      </div>
+
+      <div class="form">
+        <select name="Categoria" class="selector">
+          <option value="">Categoria</option>
+          <option v-for="item in categories" :key="item.id" :value="item.id"> {{ item.category }} </option>
+        </select>
+      </div>
+
+      <div class="form">
+        <textarea id="Descricao" name="Descricao" rows="4" cols="50" placeholder="Descrição" v-on:keyup="textAreaAdjust">
+        </textarea>
       </div>
       <div class="form">
         <button type="submit" class="btn"> Cadastrar </button>
@@ -31,7 +53,8 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { type } from '../Types/Post_Register'
+  import { type, frequency, category } from '../Types/Post_Register'
+  import axios from 'axios';
  
 
   export default defineComponent({
@@ -45,26 +68,95 @@
             { id: 2, name: "Reels" },
             { id: 3, name: "Carrossel" },
             { id: 4, name: "Carrossel animado" },
-          ] as type[]
+          ],
+          frequency: [] as frequency[],
+          categories: [] as category[],
         }
+    },
+
+    async mounted() {
+
+      try {
+
+        const response = await axios.get("http://localhost:3001/frequency_post");
+
+        this.frequency = response.data.data
+
+      } catch (err) {
+
+        console.log(err);
+
+      }
+      try {
+
+        const response = await axios.get("http://localhost:3001/category_post");
+
+        this.categories = response.data.data
+
+        } catch (err) {
+
+        console.log(err);
+
+      }
+      /* try {
+
+        const response = await axios.get("http://localhost:3001/type_post");
+
+        this.types = response.data.data
+;
+        } catch (err) {
+
+        console.log(err);
+
+      } */
+
     },
 
     methods: {
       submit(e: Event) {
         e.preventDefault();
+        let post;
         let form = document.getElementById('Cadastro') as any;
         if (form.elements.namedItem('Dentista')?.checked || form.elements.namedItem('Clínica')?.checked) {
-          var post = {
-            nome: form.elements.namedItem('Nome')?.value,
-            type: form.elements.namedItem('Tipo')?.value,
-            dentista: form.elements.namedItem('Dentista')?.checked,
-            clinica: form.elements.namedItem('Clínica')?.checked,
-            descricao: form.elements.namedItem('Descricao')?.value,
+
+          let client
+          
+          if (form.elements.namedItem('Dentista')?.checked &&  form.elements.namedItem('Clínica')?.checked) client = 3;
+          else if (form.elements.namedItem('Dentista')?.checked) client = 2;
+          else if (form.elements.namedItem('Clínica')?.checked) client = 1;
+
+          post = {
+            name: form.elements.namedItem('Nome')?.value,
+            cod_type: form.elements.namedItem('Tipo')?.value,
+            cod_client: client,
+            subtitle: form.elements.namedItem('Descricao')?.value,
+            link_curadoria: form.elements.namedItem('linkCuradoria')?.value,
+            cod_categories: 1,
+            cod_frequency: form.elements.namedItem('Frequência')?.value,
           }
+
+          console.log(post)
+
+          axios.post('http://localhost:3001/posts', post)
+            .then((response) => {
+              console.log(response);
+              alert('Post cadastrado com sucesso')
+            })
+            .catch((error) => {
+              console.log(error);
+              alert('Erro ao cadastrar post')
+            });
+
         } else {
           alert('Preencha todos os campos')
         }
+
       },
+      textAreaAdjust() {
+        const element = document.getElementById('Descricao') as any;
+        element.style.height = "1px";
+        element.style.height = (25+element.scrollHeight)+"px";
+      }
     }
   })
 </script>
@@ -73,6 +165,15 @@
 
   * {
     color: white;
+  }
+
+  textarea {
+    font-size: 1.3rem;
+    width: 100%;
+    border: none;
+    background-color: #1a1a1a ;
+    resize: initial;
+    min-height: fit-content;
   }
 
   .checkbox {

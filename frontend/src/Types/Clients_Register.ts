@@ -19,3 +19,8 @@ export type relationalData = {
     cod_clinic: number,
     related_day: string,
 }
+
+export type category = {
+    id: number,
+    category: string,
+}

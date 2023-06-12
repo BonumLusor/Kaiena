@@ -26,10 +26,10 @@
 
 
         <div  class="form">
-          <input name="Tipo" type="radio" value="2  " v-on:click="set(2)">
-          <label for=""> Radiologista </label>
-          <input name="Tipo" type="radio" value="1" v-on:click="set(1)">
-          <label for=""> Clínica </label>
+          <div v-for="item in categories" :key="item.id">
+            <input name="Tipo" type="radio" :value="item.id" v-on:click="set(item.id)">
+            <label for=""> {{item.category}} </label>
+          </div>
         </div>
 
         <div class="form">
@@ -46,13 +46,13 @@
         </div>
 
         <div class="form">
-          <select name="Relacional" id="colaborated" v-on:click="colaborated" class="selector">
-            <option>Sem colaborativo</option>
-            <option v-for="item in current" v-bind:value="item.id" v-bind:key="item.id"> {{ item.name }} </option>
+          <select name="Relacional" id="colaborated" class="selector">
+            <option v-on:click="colaborated(0)">Sem colaborativo</option>
+            <option v-for="item in current" v-bind:value="item.id" v-on:click="colaborated(1)" v-bind:key="item.id"> {{ item.name }} </option>
           </select>  
         </div>
 
-        <div class="form disabled" id="relatedDay">
+        <div class="form disabled" v-if="related" id="relatedDay">
           <input name="relatedDay" type="radio" value="monday">
             <label for=""> Segunda </label>
           <input name="relatedDay" type="radio" value="tuesday">
@@ -74,7 +74,7 @@
   
   <script lang="ts">
     import { defineComponent, shallowRef } from 'vue';
-    import { client, relationalData, relational } from '../Types/Clients_Register'
+    import { client, relationalData, relational, category } from '../Types/Clients_Register'
     import axios from "axios";
 
     export default defineComponent({
@@ -87,7 +87,8 @@
             related: [] as number[],
             clients: [] as client[],
             cities: 1 as number,
-            colors: 1 as number
+            colors: 1 as number,
+            categories: [] as category[]
           }
       },
 
@@ -99,15 +100,16 @@
 
         },
 
-        colaborated() {
-          const form = document.getElementById("Cadastro_cliente") as any;
+        colaborated(switcher: number) {
 
-          if(form.elements.namedItem("Relacional")!.value != 0) {
-            document.getElementById("relatedDay")!.classList.remove("disabled")
-            document.getElementById("relatedDay")!.classList.add("enabled")
+          const colaboratedDay = document.getElementById("relatedDay") as any;
+
+          if(switcher != 0) {
+            colaboratedDay.classList.remove("disabled")
+            colaboratedDay.classList.add("enabled")
           } else {
-            document.getElementById("relatedDay")!.classList.add("disabled")
-            document.getElementById("relatedDay")!.classList.remove("enabled")
+            colaboratedDay.classList.add("disabled")
+            colaboratedDay.classList.remove("enabled")
           }
 
         },
@@ -134,6 +136,17 @@
             this.related.push(item.cod_clinic);
             this.related.push(item.cod_radiologist);
           });
+
+        } catch (err) {
+
+          console.log(err);
+
+        }
+        try {
+
+          const response = await axios.get("http://localhost:3001/category_client");
+
+          this.categories = response.data.data
 
         } catch (err) {
 

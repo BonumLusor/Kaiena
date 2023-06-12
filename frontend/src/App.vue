@@ -25,7 +25,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: roboto;
     font-weight: 50;
   }
   tabela {
@@ -45,3 +44,7 @@
     background: #0c0c0c;
 }
 </style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">

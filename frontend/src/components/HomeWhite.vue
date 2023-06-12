@@ -3,29 +3,25 @@
 
     <div class="grid-container">
       <div v-for="item, index in clients" class="client" v-bind:id="item.name" :key="item.id" v-on:click="modalToggle(index)">
-        <p class="client-card">{{ item.name }}</p>
+        <p style="color:black" class="client-card">{{ item.name }}</p>
       </div>
       <router-link to="/register" class="client add addLink">
         +
       </router-link>
-      
     </div>
 
     <div>
 
-    <Modal v-if="showModal" @close="modalToggle">
+    <Modal v-if="showModal" @close="showModal = false">
       <template #header>
         <h3 v-if="selected != null">{{ clients[selected].name }}</h3>
       </template>
         <p v-if="selected != null && clients[selected].cod_categories_client == 2"> Dentista </p>
         <p v-else-if="selected != null && clients[selected].cod_categories_client == 1"> Clínica </p>
-        <p contenteditable="true" id="city" v-if="selected != null">{{ clients[selected].city }}</p>
-        <p contenteditable="true" id="color" v-if="selected != null">{{ clients[selected].color }}</p>
+        <p v-if="selected != null">{{ clients[selected].city }}</p>
+        <p v-if="selected != null">{{ clients[selected].color }}</p>
       <template #footer>
-        <router-link v-if="selected != null" class="link button_calendar" :to="{name: 'Calendar', params: {id:clients[selected].id}}" v-on:click="{store.commit('setStage', 'Calendar');}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-          Ir para o cronograma 
-        </router-link>
+        <router-link v-if="selected != null" class="link" :to="{name: 'Calendar', params: {id:clients[selected].id}}" v-on:click="{store.commit('setStage', 'Calendar');}"> Ir para o cronograma </router-link>
       </template>
     </Modal>
   </div>
@@ -61,9 +57,10 @@ export default defineComponent({
   },
 
   components: {
-    Modal  },
+    Modal
+  },
 
-  async mounted() {
+  async created() {
 
 
     try {
@@ -87,8 +84,8 @@ export default defineComponent({
           let hover = ""
 
           const length = item.color!.split(",").length
-          border = "linear-gradient(#1e1e1e, #1e1e1e), linear-gradient(45deg, ";
-          hover = "linear-gradient(#080808, #080808), linear-gradient(45deg, "
+          border = "linear-gradient(rgba(220, 220, 220, 1), rgba(220, 220, 220, 1)), linear-gradient(45deg, ";
+          hover = "linear-gradient(white, white), linear-gradient(45deg, "
 
           if (length != 1) {
 
@@ -114,26 +111,24 @@ export default defineComponent({
 
             })
 
+            console.log(item.name , border)
             setTimeout(() => {
 
-              const element = document.getElementById(item.name)!
+              document.getElementById(item.name)!.style.backgroundOrigin = "border-box";
+              document.getElementById(item.name)!.style.backgroundClip = "padding-box, border-box";
+              document.getElementById(item.name)!.style.border = "double 4px transparent;";
+              document.getElementById(item.name)!.style.borderRadius = "10px";
+              document.getElementById(item.name)!.style.backgroundImage = border; 
 
+              document.getElementById(item.name)!.addEventListener("mouseover", (event) => {
 
-              element.style.backgroundOrigin = "border-box";
-              element.style.backgroundClip = "padding-box, border-box";
-              element.style.border = "double 4px transparent;";
-              element.style.borderRadius = "10px";
-              element.style.backgroundImage = border; 
-
-              element.addEventListener("mouseover", (event) => {
-
-                element.style.backgroundImage = hover; 
+                document.getElementById(item.name)!.style.backgroundImage = hover; 
 
               });
 
-              element.addEventListener("mouseleave", (event) => {
+              document.getElementById(item.name)!.addEventListener("mouseleave", (event) => {
 
-                element.style.backgroundImage = border; 
+                document.getElementById(item.name)!.style.backgroundImage = border; 
 
               });
 
@@ -148,41 +143,15 @@ export default defineComponent({
     }
   },
 
-  
-
   methods: {
   
     modalToggle(index: number | null  = null) {
-      
-      if (this.showModal){
-
-        const city = document.getElementById("city")!
-        const color = document.getElementById("color")!
-
-        
-        if (city.innerText != this.clients[this.selected!].city || color.innerText != this.clients[this.selected!].color) {
-          let clientData = {
-            id: this.clients[this.selected!].id,
-            city: city.innerText,
-            color: color.innerText,
-          }
-
-          this.clients[this.selected!].city = city.innerText;
-          this.clients[this.selected!].color = color.innerText;
-
-          console.log(clientData)
-
-          axios.put("http://localhost:3001/clients", clientData);
-        }
-
-        
-      }
 
       this.selected = index;
 
       this.showModal = !this.showModal;
 
-    },
+    }
   }
 
 })
@@ -191,26 +160,12 @@ export default defineComponent({
 
 <style scoped>
   @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-  @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&display=swap');
 
   @font-face {
     font-family: "Comfortaa" ;
     src: url(../../fontes/Comfortaa-Regular.ttf);
   }
-
-  body {
-    font-family: 'Comfortaa';
-  }
   
-  textarea {
-    font-size: 1.3rem;
-    width: 100%;
-    border: none;
-    background-color: #1a1a1a ;
-    resize: initial;
-    min-height: fit-content;
-  }
-
   .grid-container {
     font-family: "Montserrat";
     display: grid;
@@ -239,25 +194,20 @@ export default defineComponent({
     align-items: center;
   }
 
-  .client:hover {
-    background-image: linear-gradient(white, white), radial-gradient(circle at top left, #f00,#3020ff);
-    transition: 0.5s;
-  }
-
   .container {
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #1e1e1e;
-    color: white;
+    background-color: rgba(220, 220, 220, 1);
+    color: black;
     margin-top: 5vh ;
     padding: 0;
     margin: 0;
     height: fit-content;
     scroll-behavior: #1e1e1e;
-    font-family: "Comfortaa";
+
   }
 
   .client {
@@ -348,23 +298,6 @@ export default defineComponent({
     color: white;
   }
 
-  .button_calendar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
 
-    background-color: #a52a2a;
-    color: white;
-    padding: 1rem;
-    border-radius: 1.5rem;
-    height: 3rem;
-    font-family: "Comfortaa";
-    transition: 0.2s;
-  }
-
-  .button_calendar:hover {
-    background-color: #952a2a;
-  }
 
 </style>

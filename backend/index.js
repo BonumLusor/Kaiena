@@ -6,6 +6,8 @@ import cors from 'cors';
 
 dotenv.config();
 
+const API_PORT = process.env.API_PORT;
+
 const app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -21,7 +23,7 @@ app.route('/clients')
         let retVal = {};
         
         try {
-            const query = 'SELECT * FROM clients ORDER BY name;';
+            const query = 'SELECT * FROM clients WHERE active="1" ORDER BY name;';
             const [rows] = await connection.query(query);
             retVal.data = rows;
         } catch (error) {
@@ -49,14 +51,31 @@ app.route('/clients')
         }
     })
 
+		.put (async (req, res) => {
+			let data = req.body; 
+			let status = 200;
+			let retVal = {};
+		
+			try {
+					const query = `UPDATE clients SET city="${data.city}", color="${data.color}" WHERE id=${data.id}`;
+					await connection.query(query);
+			} catch (error) {
+					console.error(error);
+					retVal.error = error;
+					status = 500;
+			}finally{
+					res.status(status).json(retVal);
+			}
+		})
+
 // Show Tabela Clients_categories
 
-app.get('/categorie_client', async (req, res) => {
+app.get('/category_client', async (req, res) => {
     let status = 200;
 	let retVal = {};
     
 	try {
-		const query = 'SELECT * FROM categorie_client';
+		const query = 'SELECT * FROM category_client';
 		const [rows] = await connection.query(query);
 		retVal.data = rows;
 	} catch (error) {
@@ -103,15 +122,16 @@ app.route('/clients_relational')
 						res.status(status).json(retVal);
 				}
 		})
+		
 
 // Show Tabela categorie_post
 
-app.get('/categorie_post', async (req, res) => {
+app.get('/category_post', async (req, res) => {
     let status = 200;
 	let retVal = {};
     
 	try {
-		const query = 'SELECT * FROM categorie_post';
+		const query = 'SELECT * FROM category_post';
 		const [rows] = await connection.query(query);
 		retVal.data = rows;
 	} catch (error) {
@@ -152,7 +172,75 @@ app.get('/clients/:id', async (req, res) => {
 	}
 });
 
+app.route('/posts') 
+	.get(async (req, res) => {
+		let status = 200;
+		let retVal = {};
+		
+		try {
+			const query = 'SELECT * FROM posts;';
+			const [rows] = await connection.query(query);
+			retVal.data = rows;
+		} catch (error) {
+			console.error(error);
+			retVal.error = error;
+			status = 500;
+		}finally{
+			res.status(status).json(retVal);
+		}
+	})
 
-app.listen(3001, () => {
-    console.log("App is listening")
+	.post (async (req, res) => {
+        let data = req.body; 
+        let status = 200;
+				let retVal = {};
+
+        try {
+            const query = `INSERT INTO posts (name, cod_categories, cod_type, cod_frequency, subtitle, cod_client, link_curadoria) VALUES ("${data.name}", "${data.cod_categories}", "${data.cod_type}", "${data.cod_frequency}", "${data.subtitle}", "${data.cod_client}", "${data.link_curadoria}")`;
+            await connection.query(query);
+        } catch (error) {
+            console.error(error);
+            retVal.error = error;
+            status = 500;
+        }finally{
+            res.status(status).json(retVal);
+        }
+    })
+
+
+	app.get('/frequency_post' , async (req, res) => {
+		let status = 200;
+		let retVal = {};
+		
+		try {
+				const query = 'SELECT * FROM frequency_post;';
+				const [rows] = await connection.query(query);
+				retVal.data = rows;
+		} catch (error) {
+				console.error(error);
+				retVal.error = error;
+				status = 500;
+		}finally{
+				res.status(status).json(retVal);
+		}
+});
+
+app.get('/type_post' , async (req, res) => {
+	let status = 200;
+	let retVal = {};
+	
+	try {
+			const query = 'SELECT * FROM type_post;';
+			const [rows] = await connection.query(query);
+			retVal.data = rows;
+	} catch (error) {
+			console.error(error);
+			retVal.error = error;
+			status = 500;
+	}finally{
+			res.status(status).json(retVal);
+	}
+});
+app.listen(API_PORT, () => {
+    console.log(`App is listening on port ${API_PORT}`)
 })
