@@ -8,12 +8,20 @@
         </label>
       </div>
       <div class="form">
-        <select name="Tipo" class="selector" required v-if="types.length > 0">
+        <select name="Tipo" class="selector" required >
           <option value="">Tipo</option>
-          <option v-for="type in types" :key="type.id" :value="type.id"> {{ type.name }} </option>
+          <option v-for="item in types" :key="item.id" v-bind:value="item.id"> {{ item.type }} </option>
+        </select>
+      </div>
+
+      <div class="form">
+        <select name="Categoria" class="selector" required>
+          <option value="">Categoria</option>
+          <option v-for="item in categories" :key="item.id" :value="item.id"> {{ item.category }} </option>
         </select>
       </div>
       <div class="form checkbox">
+        <label for="" class="cliente"> Cliente: </label>
         <input name="Dentista" type="checkbox" value="dentista">
         <label for=""> Dentista </label>
         <input name="Clínica" type="checkbox" value="Clinica">
@@ -27,22 +35,7 @@
       </div>
 
       <div class="form">
-        <select name="Frequência" class="selector" required>
-          <option value="">Frequência</option>
-          <option v-for="item in frequency" :key="item.id" :value="item.id"> {{ item.frequency }} </option>
-        </select>
-      </div>
-
-      <div class="form">
-        <select name="Categoria" class="selector">
-          <option value="">Categoria</option>
-          <option v-for="item in categories" :key="item.id" :value="item.id"> {{ item.category }} </option>
-        </select>
-      </div>
-
-      <div class="form">
-        <textarea id="Descricao" name="Descricao" rows="4" cols="50" placeholder="Descrição" v-on:keyup="textAreaAdjust">
-        </textarea>
+        <textarea id="Descricao" name="Descricao" rows="4" cols="50" placeholder="Descrição" v-on:keyup="textAreaAdjust"></textarea>
       </div>
       <div class="form">
         <button type="submit" class="btn"> Cadastrar </button>
@@ -53,7 +46,7 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { type, frequency, category } from '../Types/Post_Register'
+  import { type, category } from '../Types/Post_Register'
   import axios from 'axios';
  
 
@@ -63,30 +56,14 @@
 
     data() {
         return {
-          types: [
-            { id: 1, name: "Post simples" },
-            { id: 2, name: "Reels" },
-            { id: 3, name: "Carrossel" },
-            { id: 4, name: "Carrossel animado" },
-          ],
-          frequency: [] as frequency[],
+          types: [] as type[],
           categories: [] as category[],
         }
     },
 
     async mounted() {
 
-      try {
-
-        const response = await axios.get("http://localhost:3001/frequency_post");
-
-        this.frequency = response.data.data
-
-      } catch (err) {
-
-        console.log(err);
-
-      }
+      
       try {
 
         const response = await axios.get("http://localhost:3001/category_post");
@@ -98,17 +75,16 @@
         console.log(err);
 
       }
-      /* try {
+      try {
 
         const response = await axios.get("http://localhost:3001/type_post");
 
-        this.types = response.data.data
-;
+        this.types = response.data.data;
         } catch (err) {
 
         console.log(err);
 
-      } */
+      }
 
     },
 
@@ -131,8 +107,7 @@
             cod_client: client,
             subtitle: form.elements.namedItem('Descricao')?.value,
             link_curadoria: form.elements.namedItem('linkCuradoria')?.value,
-            cod_categories: 1,
-            cod_frequency: form.elements.namedItem('Frequência')?.value,
+            cod_categories: form.elements.namedItem('Categoria')?.value,
           }
 
           console.log(post)
@@ -297,5 +272,18 @@
   .btn:hover:before {
     width: 100%;
   }
+
+  option {
+    background-color: #1a1a1a ;
+  }
+
+  .cliente {
+    padding-left: 6px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
 
 </style>

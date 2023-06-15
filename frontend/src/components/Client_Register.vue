@@ -32,7 +32,14 @@
           </div>
         </div>
 
-        <div class="form">
+        <div  class="form">
+            <input name="Tipo" type="radio" :value="2">
+            <label for="Tipo"> 5 Dias </label>
+            <input name="Tipo" type="radio" :value="2">
+            <label for="Tipo"> 3 Dias </label>
+        </div>
+
+        <!-- <div class="form">
           <input name="monday" type="checkbox" value="monday">
             <label for=""> Segunda </label>
           <input name="tuesday" type="checkbox" value="tuesday">
@@ -43,7 +50,7 @@
             <label for=""> Quinta </label>
           <input name="friday" type="checkbox" value="friday">
             <label for=""> Sexta </label>
-        </div>
+        </div> -->
 
         <div class="form">
           <select name="Relacional" id="colaborated" class="selector">
@@ -162,7 +169,6 @@
         const form = document.getElementById("Cadastro_cliente") as any;
         
         form.addEventListener("submit", (e:any)=> {
-          e.preventDefault;
           const form = document.getElementById("Cadastro_cliente") as any;
           
           let weekDays: string = "";

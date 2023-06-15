@@ -82,10 +82,13 @@ export default defineComponent({
   justify-content: space-between;
   align-items: center;
   padding-bottom: 10px;
+  text-align: center;
+  width: 100%;
 }
 
 .modal-title {
   flex: 1;
+  
 }
 
 .modal-header .close-button {

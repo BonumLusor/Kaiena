@@ -1,4 +1,5 @@
 <template>
+  
   <body>
     <br>
     <div class="title">
@@ -23,7 +24,9 @@
       </div>
       <div class="grid-container" id="grid">
         <div class="day" v-for="item, index in month" v-on:click="modalToggle(item.monthDay)" :key="index"> 
-          <div class="content"> {{ item.monthDay }}  </div>
+          <div class="content"> 
+            <div class="days" :id="'day' + item.monthDay + item.month" :class="{'today': (currentDay.getDate() == item.monthDay && currentDay.getMonth() == item.month && currentDay.getFullYear() == item.year)}"> {{ item.monthDay }} </div>
+          </div>
         </div>
         <div class="day" v-for="n in (25 - month.length)" :key="n">
           <div class="content"></div>
@@ -34,7 +37,7 @@
 
     <Modal v-if="showModal" @close="showModal = false">
       <template #header>
-        <h3 v-if="selected != null">{{ selected }}</h3>
+        <h3 v-if="selected != null">Dia {{ selected }}</h3>
       </template>
         <p></p>
       <template #footer>
@@ -79,10 +82,15 @@ export default defineComponent({
       year: 0 as number,
       date: new Date(),
       currentClient: {} as client,
+      currentDay: new Date(),
     }
   },
   methods:{
+
+
     modalToggle(index: number | null  = null) {
+
+      if (index == null) return
 
       this.selected = index;
 
@@ -91,6 +99,7 @@ export default defineComponent({
     },
 
     nextMonth(){ 
+
       this.month = []
 
       if (this.numberMonth < 11) {
@@ -134,7 +143,10 @@ export default defineComponent({
       if (this.date.getDay() == 0 || this.date.getDay() == 6) continue
       let temp = {
         monthDay: this.date.getDate(),
-        weekDay: this.date.getDay()
+        weekDay: this.date.getDay(),
+        month: this.date.getMonth(),
+        year: this.date.getFullYear(),
+        post: null
       }
       this.month.push(temp)
     }
@@ -142,22 +154,22 @@ export default defineComponent({
     
       
       if (this.month[0].weekDay == 2){
-        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
       }
       if (this.month[0].weekDay == 3){
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
       }
       if (this.month[0].weekDay == 4){
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
       }
       if (this.month[0].weekDay == 5){
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
       }
     },
     pastMonth() { 
@@ -204,32 +216,61 @@ export default defineComponent({
         if (this.date.getDay() == 0 || this.date.getDay() == 6) continue
         let temp = {
           monthDay: this.date.getDate(),
-          weekDay: this.date.getDay()
+          weekDay: this.date.getDay(),
+          month: this.date.getMonth(),
+          year: this.date.getFullYear(), 
+          post:null
         }
         this.month.push(temp)
       }
       
       
       if (this.month[0].weekDay == 2){
-        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
       }
       if (this.month[0].weekDay == 3){
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
       }
       if (this.month[0].weekDay == 4){
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
       }
       if (this.month[0].weekDay == 5){
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
-        this.month.unshift({monthDay: null, weekDay: null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+        this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+      }
+
+      this.schedule()
+
+    },
+
+    async schedule() {
+
+      try {
+
+        const response = await axios.get('http://Localhost:3001/posts');
+        const response2 = await axios.get(`http://Localhost:3001/calendar/${this.currentClient.id}/${this.numberMonth}/${this.year}`);
+        const response3 = await axios.get('http://Localhost:3001/frequency_post');
+
+        console.log(response2.data.data)  
+        console.log(response.data.data)
+        console.log(response3.data.data)
+
+
+      } catch {
+
+      } finally {
+
+
+
       }
 
     }
+    
   },
   beforeMount(){
     this.numberMonth = this.date.getMonth()
@@ -266,30 +307,35 @@ export default defineComponent({
       if (this.date.getDay() == 0 || this.date.getDay() == 6) continue
       let temp = {
         monthDay: this.date.getDate(),
-        weekDay: this.date.getDay()
+        weekDay: this.date.getDay(),
+        month: this.date.getMonth(),
+        year: this.date.getFullYear(), 
+        post:null
       }
       this.month.push(temp)
     }
     
     if (this.month[0].weekDay == 2){
-      this.month.unshift({monthDay: null, weekDay: null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
     }
     if (this.month[0].weekDay == 3){
-      this.month.unshift({monthDay: null, weekDay: null})
-      this.month.unshift({monthDay: null, weekDay: null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
     }
     if (this.month[0].weekDay == 4){
-      this.month.unshift({monthDay: null, weekDay: null})
-      this.month.unshift({monthDay: null, weekDay: null})
-      this.month.unshift({monthDay: null, weekDay: null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
     }
     if (this.month[0].weekDay == 5){
-      this.month.unshift({monthDay: null, weekDay: null})
-      this.month.unshift({monthDay: null, weekDay: null})
-      this.month.unshift({monthDay: null, weekDay: null})
-      this.month.unshift({monthDay: null, weekDay: null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
     }
     
+    this.schedule()
+
   },
 
   async created() {
@@ -301,7 +347,6 @@ export default defineComponent({
 
       this.currentClient = response.data.data
 
-      console.log(this.currentClient)
 
     } catch (err) {
 
@@ -337,6 +382,7 @@ export default defineComponent({
 
           })
 
+          
           document.getElementById("grid")!.style.backgroundImage = border
           document.getElementById("name")!.style.backgroundImage = border
 
@@ -520,6 +566,7 @@ export default defineComponent({
 
 
   .content {
+    position: relative;
     background-color: #1e1e1e;
     width: 100%;
     height: 100%;
@@ -542,6 +589,21 @@ export default defineComponent({
     -webkit-background-clip: text; 
     -webkit-text-fill-color: transparent;
     width: 40rem
+  }
+
+  .days {
+    position: absolute;
+    width: 30px;
+    text-align: center;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .today {
+    border: 2px solid #fff;
   }
 
 </style>

@@ -196,7 +196,7 @@ app.route('/posts')
 				let retVal = {};
 
         try {
-            const query = `INSERT INTO posts (name, cod_categories, cod_type, cod_frequency, subtitle, cod_client, link_curadoria) VALUES ("${data.name}", "${data.cod_categories}", "${data.cod_type}", "${data.cod_frequency}", "${data.subtitle}", "${data.cod_client}", "${data.link_curadoria}")`;
+            const query = `INSERT INTO posts (name, cod_categories, cod_type, subtitle, cod_client, link_curadoria) VALUES ("${data.name}", "${data.cod_categories}", "${data.cod_type}", "${data.subtitle}", "${data.cod_client}", "${data.link_curadoria}")`;
             await connection.query(query);
         } catch (error) {
             console.error(error);
@@ -207,23 +207,22 @@ app.route('/posts')
         }
     })
 
-
-	app.get('/frequency_post' , async (req, res) => {
+	.get(async (req, res) => {
 		let status = 200;
 		let retVal = {};
 		
 		try {
-				const query = 'SELECT * FROM frequency_post;';
-				const [rows] = await connection.query(query);
-				retVal.data = rows;
+			const query = 'SELECT * FROM posts ;';
+			const [rows] = await connection.query(query);
+			retVal.data = rows;
 		} catch (error) {
-				console.error(error);
-				retVal.error = error;
-				status = 500;
+			console.error(error);
+			retVal.error = error;
+			status = 500;
 		}finally{
-				res.status(status).json(retVal);
+			res.status(status).json(retVal);
 		}
-});
+	})
 
 app.get('/type_post' , async (req, res) => {
 	let status = 200;
@@ -241,6 +240,55 @@ app.get('/type_post' , async (req, res) => {
 			res.status(status).json(retVal);
 	}
 });
+
+app.get('/frequency_post' , async (req, res) => {
+	let status = 200;
+	let retVal = {};
+	
+	try {
+			const query = 'SELECT * FROM frequency_post;';
+			const [rows] = await connection.query(query);
+			retVal.data = rows;
+	} catch (error) {
+			console.error(error);
+			retVal.error = error;
+			status = 500;
+	}finally{
+			res.status(status).json(retVal);
+	}
+});
+
+app.get('/calendar/:client/:month/:year/', async (req, res) => {
+  let status = 200;
+  let retVal = {};
+
+  const { client, month, year } = req.params;
+  if (isNaN(Number(month)) || isNaN(Number(year))) {
+    status = 400;
+    retVal.message = 'Invalid request. Please make sure the month and year are numbers';
+    return res.status(status).json(retVal);
+  }
+
+  try {
+    // Ajuste a consulta de acordo com a estrutura do seu banco de dados
+    const query = 'SELECT * FROM calendar WHERE client = ? AND month = ? AND year = ?';
+    const [rows] = await connection.query(query, [client, month, year]);
+
+    if (rows.length === 0) {
+      status = 404;
+      retVal.message = 'No data found for the specified parameters';
+    } else {
+      retVal.data = rows;
+    }
+  } catch (error) {
+    console.error(error);
+    retVal.error = error;
+    status = 500;
+  }
+
+  res.status(status).json(retVal);
+});
+
 app.listen(API_PORT, () => {
-    console.log(`App is listening on port ${API_PORT}`)
+		console.log(`App is listening on port ${API_PORT}`)
 })
