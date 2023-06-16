@@ -23,9 +23,11 @@
         </div>
       </div>
       <div class="grid-container" id="grid">
-        <div class="day" v-for="item, index in month" v-on:click="modalToggle(item.monthDay)" :key="index"> 
+        <div class="day" v-for="item, index in month" v-on:click="modalToggle(index)" :key="index"> 
           <div class="content"> 
-            <div class="days" :id="'day' + item.monthDay + item.month" :class="{'today': (currentDay.getDate() == item.monthDay && currentDay.getMonth() == item.month && currentDay.getFullYear() == item.year)}"> {{ item.monthDay }} </div>
+            <div class="days" :class="{'today': (currentDay.getDate() == item.monthDay && currentDay.getMonth() == item.month && currentDay.getFullYear() == item.year)}"> {{ item.monthDay }} </div>
+            <div class="postName" v-if="item.post"> {{ item.post.name }} </div>
+            <div class="postCategory" v-if="item.post"> {{ item.post.category }} </div>
           </div>
         </div>
         <div class="day" v-for="n in (25 - month.length)" :key="n">
@@ -37,9 +39,17 @@
 
     <Modal v-if="showModal" @close="showModal = false">
       <template #header>
-        <h3 v-if="selected != null">Dia {{ selected }}</h3>
+        <h3 v-if="selected != null && month[selected] != null">Dia {{ month[selected].monthDay }}</h3>
       </template>
-        <p></p>
+        <p v-if="selected != null && month[selected] != null && month[selected].post != null"> Título: {{ month[selected].post.name }} </p>
+        <br>
+        <p v-if="selected != null && month[selected] != null && month[selected].post != null"> Tipo: {{ month[selected].post.type }} </p>
+        <br>
+        <p v-if="selected != null && month[selected] != null && month[selected].post != null && month[selected].post.link_curadoria"> Link curadoria: {{ month[selected].post?.link_curadoria }} </p>
+        <br> 
+        <p v-if="selected != null && month[selected] != null && month[selected].post != null"> {{ month[selected].post.category }} </p>
+        <br>
+        <p v-if="selected != null && month[selected] != null && month[selected].post != null"> Legenda: {{ month[selected].post.subtitle }} </p>
       <template #footer>
       </template>
     </Modal>
@@ -49,7 +59,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { numberMonth } from '../Types/Calendar';
+import { numberMonth, post } from '../Types/Calendar';
 import axios from "axios";
 import { client, relationalData, relational } from '../Types/Clients_Register'
 import Modal from './partials/modal.vue';
@@ -83,17 +93,19 @@ export default defineComponent({
       date: new Date(),
       currentClient: {} as client,
       currentDay: new Date(),
+      frequency: [],
+      posts: [] as post[],
     }
   },
   methods:{
 
 
-    modalToggle(index: number | null  = null) {
+    modalToggle(index: number) {
 
-      if (index == null) return
+      if (this.month[index].monthDay == null) return
 
       this.selected = index;
-
+    
       this.showModal = !this.showModal;
 
     },
@@ -245,27 +257,39 @@ export default defineComponent({
       }
 
       this.schedule()
+      
 
     },
 
     async schedule() {
 
+      let data
+
       try {
 
-        const response = await axios.get('http://Localhost:3001/posts');
+        const response1 = await axios.get('http://Localhost:3001/long_post');
         const response2 = await axios.get(`http://Localhost:3001/calendar/${this.currentClient.id}/${this.numberMonth}/${this.year}`);
         const response3 = await axios.get('http://Localhost:3001/frequency_post');
 
-        console.log(response2.data.data)  
-        console.log(response.data.data)
-        console.log(response3.data.data)
-
+        this.posts = response1.data.data;
+        data = response2.data.data;
+        this.frequency = response3.data.data;
 
       } catch {
 
       } finally {
 
+        const init = performance.now()
 
+        data.forEach((db: any) => {
+          
+          this.month.find((e:any) => e.monthDay == db.day)!.post = this.posts.find((e:any) => e.id == db.post)!
+
+        })
+
+        const end = performance.now()
+
+        console.log(end - init)
 
       }
 
@@ -403,8 +427,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
-  
 
   #postInput {
     border: none;
@@ -600,10 +622,40 @@ export default defineComponent({
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-left: 3px;
+    margin-top: 2px;
   }
 
   .today {
     border: 2px solid #fff;
+  }
+
+  .postName {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    height: 90%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 3px;
+    margin-top: 2px;
+    font-size: 0.8rem;
+  }
+
+  .postCategory {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    height: 140%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 3px;
+    margin-top: 2px;
+    font-size: 0.8rem;
   }
 
 </style>

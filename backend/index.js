@@ -172,6 +172,23 @@ app.get('/clients/:id', async (req, res) => {
 	}
 });
 
+app.get('/long_post', async (req, res) => {
+    let status = 200;
+	let retVal = {};
+    
+	try {
+		const query = 'SELECT posts.id, posts.name, posts.subtitle, posts.link_curadoria, category_post.category, type_post.type FROM posts INNER JOIN type_post ON type_post.id=posts.cod_type INNER JOIN category_post ON category_post.id=posts.cod_categories;';
+		const [rows] = await connection.query(query);
+		retVal.data = rows;
+	} catch (error) {
+		console.error(error);
+		retVal.error = error;
+		status = 500;
+	}finally{
+		res.status(status).json(retVal);
+	}
+})
+
 app.route('/posts') 
 	.get(async (req, res) => {
 		let status = 200;
@@ -271,7 +288,7 @@ app.get('/calendar/:client/:month/:year/', async (req, res) => {
 
   try {
     // Ajuste a consulta de acordo com a estrutura do seu banco de dados
-    const query = 'SELECT * FROM calendar WHERE client = ? AND month = ? AND year = ?';
+    const query = 'SELECT * FROM calendar WHERE client = ? AND month = ? AND year = ? ORDER BY day';
     const [rows] = await connection.query(query, [client, month, year]);
 
     if (rows.length === 0) {
