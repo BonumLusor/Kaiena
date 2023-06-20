@@ -306,6 +306,37 @@ app.get('/calendar/:client/:month/:year/', async (req, res) => {
   res.status(status).json(retVal);
 });
 
+app.get('/calendar/:client/:type', async (req, res) => {
+	let status = 200;
+	let retVal = {};
+  
+	const { client, type } = req.params;
+	if (isNaN(Number(client)) || isNaN(Number(type))) {
+	  status = 400;
+	  retVal.message = 'Invalid request. Please make sure the month and year are numbers';
+	  return res.status(status).json(retVal);
+	}
+  
+	try {
+	  // Ajuste a consulta de acordo com a estrutura do seu banco de dados
+	  const query = "SELECT calendar.day, calendar.month+1 AS month, calendar.year, posts.name, type_post.type FROM posts JOIN calendar ON posts.id=calendar.post JOIN type_post ON type_post.id=posts.cod_type WHERE calendar.client = ? AND type_post.id = ? ORDER BY year DESC, month DESC, day DESC LIMIT 1;";
+	  const [rows] = await connection.query(query, [ client, type ]);
+  
+	  if (rows.length === 0) {
+		status = 404;
+		retVal.message = 'No data found for the specified parameters';
+	  } else {
+		retVal.data = rows;
+	  }
+	} catch (error) {
+	  console.error(error);
+	  retVal.error = error;
+	  status = 500;
+	}
+  
+	res.status(status).json(retVal);
+  });
+
 app.listen(API_PORT, () => {
 		console.log(`App is listening on port ${API_PORT}`)
 })

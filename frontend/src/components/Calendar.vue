@@ -3,6 +3,7 @@
   <body>
     <br>
     <div class="title">
+      <router-link to="/"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512" style="fill:#ffffff; font-size: 26px; margin-left: 15px"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg></router-link>
       <div id="name"> <h3>{{ currentClient.name }}</h3> </div>
       <div class="month"> 
         <h1> {{ currentMonth }} / {{ year }} </h1> 
@@ -26,7 +27,8 @@
         <div class="day" v-for="item, index in month" v-on:click="modalToggle(index)" :key="index"> 
           <div class="content"> 
             <div class="days" :class="{'today': (currentDay.getDate() == item.monthDay && currentDay.getMonth() == item.month && currentDay.getFullYear() == item.year)}"> {{ item.monthDay }} </div>
-            <div class="postName" v-if="item.post"> {{ item.post.name }} </div>
+            <div class="postName" v-if="item.post && item.post.name.length < 50"> {{ item.post.name }} </div>
+            <div class="postName" v-if="item.post && item.post.name.length >= 50"> {{ item.post.name.slice(0, 50) + "..." }} </div>
             <div class="postCategory" v-if="item.post"> {{ item.post.category }} </div>
           </div>
         </div>
@@ -183,6 +185,9 @@ export default defineComponent({
         this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
         this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
       }
+
+      if(this.currentDay.getDate() > this.numberMonth ) this.pastDays();
+
     },
     pastMonth() { 
       this.month = []
@@ -256,12 +261,12 @@ export default defineComponent({
         this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
       }
 
-      this.schedule()
+      if(this.currentDay.getDate() > this.numberMonth ) this.pastDays();
       
 
     },
 
-    async schedule() {
+    async pastDays() {
 
       let data
 
@@ -291,6 +296,17 @@ export default defineComponent({
 
         console.log(end - init)
 
+      }
+
+    },
+
+    async schedule() {
+
+      try {
+        const response = await axios.get('http://Localhost:3001/calendar/2/4')
+        console.log(response)
+      } catch {
+        console.log("erro")
       }
 
     }
@@ -358,7 +374,7 @@ export default defineComponent({
       this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
     }
     
-    this.schedule()
+    if(this.currentDay.getDate() > this.numberMonth ) this.pastDays();
 
   },
 
