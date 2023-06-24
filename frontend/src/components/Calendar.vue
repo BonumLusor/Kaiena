@@ -166,9 +166,6 @@ export default defineComponent({
         case 11:
           this.currentMonth = "Dezembro";
           break;
-        default:
-          // Tratamento caso `this.numberMonth` não corresponda a nenhum caso acima
-          break;
       }
 
 
@@ -235,18 +232,44 @@ export default defineComponent({
         this.date.setMonth(this.numberMonth)
       }
 
-      if (this.numberMonth == 0) this.currentMonth = "Janeiro"
-      if (this.numberMonth == 1) this.currentMonth = "Fevereiro"
-      if (this.numberMonth == 2) this.currentMonth = "Março"
-      if (this.numberMonth == 3) this.currentMonth = "Abril"
-      if (this.numberMonth == 4) this.currentMonth = "Maio"
-      if (this.numberMonth == 5) this.currentMonth = "Junho"
-      if (this.numberMonth == 6) this.currentMonth = "Julho"
-      if (this.numberMonth == 7) this.currentMonth = "Agosto"
-      if (this.numberMonth == 8) this.currentMonth = "Setembro"
-      if (this.numberMonth == 9) this.currentMonth = "Outubro"
-      if (this.numberMonth == 10) this.currentMonth = "Novembro"
-      if (this.numberMonth == 11) this.currentMonth = "Dezembro"
+      switch (this.numberMonth) {
+        case 0:
+          this.currentMonth = "Janeiro";
+          break;
+        case 1:
+          this.currentMonth = "Fevereiro";
+          break;
+        case 2:
+          this.currentMonth = "Março";
+          break;
+        case 3:
+          this.currentMonth = "Abril";
+          break;
+        case 4:
+          this.currentMonth = "Maio";
+          break;
+        case 5:
+          this.currentMonth = "Junho";
+          break;
+        case 6:
+          this.currentMonth = "Julho";
+          break;
+        case 7:
+          this.currentMonth = "Agosto";
+          break;
+        case 8:
+          this.currentMonth = "Setembro";
+          break;
+        case 9:
+          this.currentMonth = "Outubro";
+          break;
+        case 10:
+          this.currentMonth = "Novembro";
+          break;
+        case 11:
+          this.currentMonth = "Dezembro";
+          break;
+      }
 
       let monthLength = 0
       if (this.numberMonth == 0 || this.numberMonth == 2 || this.numberMonth == 4 || this.numberMonth == 6 || this.numberMonth == 7 || this.numberMonth == 9 || this.numberMonth == 11){
@@ -403,13 +426,14 @@ export default defineComponent({
               break
               case "Bimestralmente":
 
-                cadastrandoPosts( type, 1 );
+                const temp1 = lastType.find(element => element.type == type.type)!
+                if(temp1 && temp1.month < this.numberMonth && temp1.year < this.year) cadastrandoPosts( type, temp1.day );
 
               break
               case "Anual":
 
-                const temp = lastType.find(element => element.type == type.type)!
-                if(temp && temp.month == this.numberMonth && temp.year < this.year) cadastrandoPosts( type, temp.day );
+                const temp2 = lastType.find(element => element.type == type.type)!
+                if(temp2 && temp2.month == this.numberMonth && temp2.year < this.year) cadastrandoPosts( type, temp2.day );
 
               break
               case "6 vezes ao mês":

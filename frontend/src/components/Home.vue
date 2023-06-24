@@ -13,7 +13,7 @@
 
     <div>
 
-    <Modal v-if="showModal" @close="modalToggle">
+    <Modal v-if="showModal" @close="showModal = false">
       <template #header>
         <!-- <h3 v-if="selected != null">{{ clients[selected].name }}</h3> -->
       </template>
@@ -29,6 +29,9 @@
         <div v-if="selected != null && clients[selected].color != null && clients[selected] != null">
          <!--  <p contenteditable="true" id="color" v-for="color, index in clients[selected].color.split(",")">{{ color }}</p>  -->
         </div>
+        <p v-if="selected != null"> 
+          {{ clients[selected].color }}
+        </p>
       <template #footer>
         <router-link v-if="selected != null" class="link button_calendar" :to="{name: 'Calendar', params: {id:clients[selected].id}}" v-on:click="{store.commit('setStage', 'Calendar');}">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
@@ -185,7 +188,6 @@ export default defineComponent({
 
           axios.put("http://localhost:3001/clients", clientData);
         }
-
         
       }
 

@@ -74,7 +74,8 @@ export default defineComponent({
   background-color: #111d;
   padding: 20px;
   border-radius: 8px;
-  height: 50vh;
+  height: fit-content;
+  min-height: 40vh;
 }
 
 .modal-header {
