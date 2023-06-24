@@ -1,6 +1,7 @@
 <template>
   
   <body>
+  <button v-on:click="schedule"> Schedule </button>
     <br>
     <div class="title">
       <router-link to="/"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512" style="fill:#ffffff; font-size: 26px; margin-left: 15px"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg></router-link>
@@ -128,18 +129,48 @@ export default defineComponent({
         this.date.setMonth(this.numberMonth)
       }
 
-      if (this.numberMonth == 0) this.currentMonth = "Janeiro"
-      if (this.numberMonth == 1) this.currentMonth = "Fevereiro"
-      if (this.numberMonth == 2) this.currentMonth = "Março"
-      if (this.numberMonth == 3) this.currentMonth = "Abril"
-      if (this.numberMonth == 4) this.currentMonth = "Maio"
-      if (this.numberMonth == 5) this.currentMonth = "Junho"
-      if (this.numberMonth == 6) this.currentMonth = "Julho"
-      if (this.numberMonth == 7) this.currentMonth = "Agosto"
-      if (this.numberMonth == 8) this.currentMonth = "Setembro"
-      if (this.numberMonth == 9) this.currentMonth = "Outubro"
-      if (this.numberMonth == 10) this.currentMonth = "Novembro"
-      if (this.numberMonth == 11) this.currentMonth = "Dezembro"
+      switch (this.numberMonth) {
+        case 0:
+          this.currentMonth = "Janeiro";
+          break;
+        case 1:
+          this.currentMonth = "Fevereiro";
+          break;
+        case 2:
+          this.currentMonth = "Março";
+          break;
+        case 3:
+          this.currentMonth = "Abril";
+          break;
+        case 4:
+          this.currentMonth = "Maio";
+          break;
+        case 5:
+          this.currentMonth = "Junho";
+          break;
+        case 6:
+          this.currentMonth = "Julho";
+          break;
+        case 7:
+          this.currentMonth = "Agosto";
+          break;
+        case 8:
+          this.currentMonth = "Setembro";
+          break;
+        case 9:
+          this.currentMonth = "Outubro";
+          break;
+        case 10:
+          this.currentMonth = "Novembro";
+          break;
+        case 11:
+          this.currentMonth = "Dezembro";
+          break;
+        default:
+          // Tratamento caso `this.numberMonth` não corresponda a nenhum caso acima
+          break;
+      }
+
 
       let monthLength = 0
       if (this.numberMonth == 0 || this.numberMonth == 2 || this.numberMonth == 4 || this.numberMonth == 6 || this.numberMonth == 7 || this.numberMonth == 9 || this.numberMonth == 11){
@@ -272,19 +303,15 @@ export default defineComponent({
 
       try {
 
-        const response1 = await axios.get('http://Localhost:3001/long_post');
         const response2 = await axios.get(`http://Localhost:3001/calendar/${this.currentClient.id}/${this.numberMonth}/${this.year}`);
         const response3 = await axios.get('http://Localhost:3001/frequency_post');
 
-        this.posts = response1.data.data;
         data = response2.data.data;
         this.frequency = response3.data.data;
 
       } catch {
 
       } finally {
-
-        const init = performance.now()
 
         data.forEach((db: any) => {
           
@@ -294,7 +321,6 @@ export default defineComponent({
 
         const end = performance.now()
 
-        console.log(end - init)
 
       }
 
@@ -302,30 +328,164 @@ export default defineComponent({
 
     async schedule() {
 
+      let lastType: any[] = []
+      let typesFrequency: any
+      const a = this
+
       try {
-        const response = await axios.get('http://Localhost:3001/calendar/2/4')
-        console.log(response)
-      } catch {
-        console.log("erro")
+        const response = await axios.get('http://Localhost:3001/type_post')
+        typesFrequency = response.data.data
+      } catch (error: any) {
+        console.log("erro:", error.message);
       }
+
+      async function fazerRequisicoes() {
+        for (const type of typesFrequency) {
+          try {
+            const response = await axios.get(`http://localhost:3001/calendar/${a.currentClient.id}/${type.id}`);
+            lastType.push(response.data.data[0]);
+          } catch (error: any) {
+            console.log("erro:", error.message);
+          }
+        }
+      }
+
+      fazerRequisicoes()
+        .then(() => {
+          let post: post
+          let ocupedDays: number[] = []
+          
+          function cadastrandoPosts(type: any, dia: number) {
+
+            while (ocupedDays.includes(dia) || !a.month.find(Element => Element.monthDay == dia)) {
+              dia ++    
+            }
+
+            let temp = lastType.find(element => element.type == type.type)
+            a.posts.forEach((element: any) => {
+              if (element.type == temp.type && element.category != temp.category) {
+                post = element;
+                return
+              }
+            });
+            a.month.find(Element => Element.monthDay == dia)!.post = post
+            lastType[lastType.findIndex(element => element.type == type.type)] = a.month.find(Element => Element.monthDay == dia)!.post
+
+            ocupedDays.push(dia)
+            
+
+          }
+
+
+          typesFrequency.forEach( (type:any) => {
+
+            switch (type.frequency) {
+              case "Semanalmente": 
+
+                cadastrandoPosts( type, 1 );
+                  
+              break
+              case "Quinzenal":
+
+                cadastrandoPosts( type, 1 );
+                cadastrandoPosts( type, 15 );
+
+              break
+              case "Mensalmente":
+
+                cadastrandoPosts( type, 1 );
+
+              break
+              case "45 dias":
+
+                console.log("45 dias")
+
+              break
+              case "Bimestralmente":
+
+                cadastrandoPosts( type, 1 );
+
+              break
+              case "Anual":
+
+                const temp = lastType.find(element => element.type == type.type)!
+                if(temp && temp.month == this.numberMonth && temp.year < this.year) cadastrandoPosts( type, temp.day );
+
+              break
+              case "6 vezes ao mês":
+
+                cadastrandoPosts( type, 1 );
+                cadastrandoPosts( type, 6 );
+                cadastrandoPosts( type, 10 );
+                cadastrandoPosts( type, 15 );
+                cadastrandoPosts( type, 19 );
+                cadastrandoPosts( type, 24 );
+
+              break
+              case "3 vezes ao mês":
+
+                cadastrandoPosts( type, 1 );
+                cadastrandoPosts( type, 9 );
+                cadastrandoPosts( type, 18 );
+
+              break
+            }
+
+          })
+
+        }) 
+        
+
+      
+
+      
+
+      
 
     }
     
   },
   beforeMount(){
     this.numberMonth = this.date.getMonth()
-      if (this.numberMonth == 0) this.currentMonth = "Janeiro"
-      if (this.numberMonth == 1) this.currentMonth = "Fevereiro"
-      if (this.numberMonth == 2) this.currentMonth = "Março"
-      if (this.numberMonth == 3) this.currentMonth = "Abril"
-      if (this.numberMonth == 4) this.currentMonth = "Maio"
-      if (this.numberMonth == 5) this.currentMonth = "Junho"
-      if (this.numberMonth == 6) this.currentMonth = "Julho"
-      if (this.numberMonth == 7) this.currentMonth = "Agosto"
-      if (this.numberMonth == 8) this.currentMonth = "Setembro"
-      if (this.numberMonth == 9) this.currentMonth = "Outubro"
-      if (this.numberMonth == 10) this.currentMonth = "Novembro"
-      if (this.numberMonth == 11) this.currentMonth = "Dezembro"
+    switch (this.numberMonth) {
+      case 0:
+        this.currentMonth = "Janeiro";
+        break;
+      case 1:
+        this.currentMonth = "Fevereiro";
+        break;
+      case 2:
+        this.currentMonth = "Março";
+        break;
+      case 3:
+        this.currentMonth = "Abril";
+        break;
+      case 4:
+        this.currentMonth = "Maio";
+        break;
+      case 5:
+        this.currentMonth = "Junho";
+        break;
+      case 6:
+        this.currentMonth = "Julho";
+        break;
+      case 7:
+        this.currentMonth = "Agosto";
+        break;
+      case 8:
+        this.currentMonth = "Setembro";
+        break;
+      case 9:
+        this.currentMonth = "Outubro";
+        break;
+      case 10:
+        this.currentMonth = "Novembro";
+        break;
+      case 11:
+        this.currentMonth = "Dezembro";
+        break;
+    }
+
     this.year = this.date.getFullYear()
   },
 
@@ -356,22 +516,22 @@ export default defineComponent({
     }
     
     if (this.month[0].weekDay == 2){
-      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post: null})
     }
     if (this.month[0].weekDay == 3){
-      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
-      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post: null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post: null})
     }
     if (this.month[0].weekDay == 4){
-      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
-      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
-      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post: null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post: null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post: null})
     }
     if (this.month[0].weekDay == 5){
-      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
-      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
-      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
-      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post:null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post: null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post: null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post: null})
+      this.month.unshift({monthDay: null, weekDay: null, month: null, year: null, post: null})
     }
     
     if(this.currentDay.getDate() > this.numberMonth ) this.pastDays();
@@ -384,6 +544,9 @@ export default defineComponent({
     try {
 
       const response = await axios.get(`http://localhost:3001/clients/${this.$route.params.id}`);
+      const response1 = await axios.get('http://Localhost:3001/long_post');
+
+      this.posts = response1.data.data;
 
       this.currentClient = response.data.data
 
@@ -601,7 +764,6 @@ export default defineComponent({
     padding: 0;
     padding-bottom: -1vh;
   }
-
 
   .content {
     position: relative;

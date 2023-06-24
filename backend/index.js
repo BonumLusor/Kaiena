@@ -246,7 +246,7 @@ app.get('/type_post' , async (req, res) => {
 	let retVal = {};
 	
 	try {
-			const query = 'SELECT * FROM type_post;';
+			const query = 'SELECT type_post.id, type_post.type, frequency_post.frequency FROM type_post JOIN frequency_post ON type_post.cod_frequency = frequency_post.id;';
 			const [rows] = await connection.query(query);
 			retVal.data = rows;
 	} catch (error) {
